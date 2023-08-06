@@ -1,0 +1,53 @@
+version: "3.9"
+services:
+  nginx_soloveresin:
+    container_name: nginx_soloveresin
+    image: nginx:stable-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./php:/var/www
+      - ./logs/nginx:/var/log/nginx
+    links:
+      - php_soloveresin
+
+  php_soloveresin:
+    container_name: php_soloveresin
+    build: ./php
+    working_dir: /var/www
+    volumes:
+      - ./php:/var/www
+      - ./logs/php:/var/log
+    depends_on:
+      - mysql_soloveresin
+
+  mysql_soloveresin:
+    container_name: mysql_soloveresin
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
+      MYSQL_DATABASE: so-love-resin
+    volumes:
+      - type: volume
+        source: soloveresindb
+        target: /var/lib/mysql
+    ports:
+      - "3306:3306"
+  phpmyadmin_soloveresin:
+    container_name: phpmyadmin_soloveresin
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mysql_soloveresin
+      PMA_PORT: 3306
+      PMA_USER: $PMA_USER
+      PMA_PASSWORD: $PMA_PASSWORD
+    restart: always
+    ports:
+      - 8081:80
+
+volumes:
+  soloveresindb:
