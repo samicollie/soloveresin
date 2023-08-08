@@ -1,5 +1,5 @@
 <?php
-use App\Model\Router\Router;
+use App\Models\Router\Router;
 
 require '../vendor/autoload.php';
 

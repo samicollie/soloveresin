@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model\Router;
+namespace App\Models\Router;
 use App\Controller;
 
 class Route {
@@ -29,7 +29,7 @@ class Route {
     public function call()
     {
         $params = explode('@', $this->callable);
-        $controller = "App\\Controller\\" . $params[0] . "Controller";
+        $controller = "App\\Controllers\\" . $params[0] . "Controller";
         $controller = new $controller();
         $method = $params[1];
 

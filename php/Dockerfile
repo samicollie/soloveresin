@@ -11,7 +11,9 @@ RUN apt update && \
 
 # Call PHP images script `docker-php-ext-install` and install language extensions
 RUN docker-php-ext-install  \
-    zip
+    zip \
+    pdo \
+    pdo_mysql
 
 # copy the Composer PHAR from the Composer image into the PHP image
 COPY --from=composer /usr/bin/composer /usr/bin/composer

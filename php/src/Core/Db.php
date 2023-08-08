@@ -10,7 +10,7 @@ class Db extends PDO
     private static $instance;
 
     //connection's informations
-    private const HOST = 'localhost';
+    private const HOST = 'mysql_soloveresin';
     private const USER = 'root';
     private const PWD = 'localhost';
     private const DBNAME = 'so-love-resin';
