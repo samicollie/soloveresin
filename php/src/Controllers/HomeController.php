@@ -3,10 +3,14 @@ namespace App\Controllers;
 
 use App\Models\Products;
 
-class HomeController {
+class HomeController extends Controller {
 
     public function index (){
-        echo'Bienvenue sur la Homepage';
+        $model = new Products;
+
+        $products = $model->findAll();
+
+        $this->render('home/index', ['products' => $products]);
 
     }
 }
