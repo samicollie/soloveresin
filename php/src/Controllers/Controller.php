@@ -9,7 +9,14 @@ abstract class Controller
         // extract the data
         extract($data);
 
+        //we start the buffer
+        ob_start();
+
         //create path to the view
         require_once ROOT. '/src/Views/'. $filename . '.php';
+
+        $content = ob_get_clean();
+
+        require_once ROOT.'/src/Views/default.php';
     }
 }

@@ -1,0 +1,11 @@
+:root{
+
+    /*------Colors-----------*/
+
+--primary : #D1FEF7;
+--grey: #5A5656;
+--lightgrey: #D9D9D9;
+--box-shadow: 2px 2px 10px 2px var(--grey);
+--mini-box-shadow : 1px 1px 5px 1px var(--grey);
+
+}
