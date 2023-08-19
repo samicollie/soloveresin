@@ -40,7 +40,7 @@ class Model extends Db
 
     public function find(int $id)
     {
-        return $this->request("SELECT * FROM $this->table WHERE id_" . substr(lcfirst($this->table), 0, -1) . "= $id")->fetch();
+        return $this->request("SELECT * FROM $this->table WHERE id_" . substr(lcfirst($this->table), 0, -1) . " = $id")->fetch();
     }
 
     public function create(Model $model)

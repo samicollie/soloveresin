@@ -14,7 +14,7 @@ class HomeController extends Controller {
             array_splice($arrayALlPictures, $index, 1);
         }
 
-        $this->render('home/index', ['pictures' => $pictures]);
+        $this->render('home/index', 'Accueil : So Love Resin', ['pictures' => $pictures]);
 
     }
 }

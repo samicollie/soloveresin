@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Models\Router;
-use App\Controller;
 
 class Route {
 
@@ -19,10 +18,13 @@ class Route {
     {
         $path = preg_replace('#:([\w]+)#', '([^/]+)', $this->path);
         $regex = "#^$path$#i";
+        preg_match($regex, $url, $matches);
+        
         if(!preg_match($regex, $url, $matches)){
             return false;
         }
-        $this->matches = array_shift($matches);
+        array_shift($matches);
+        $this->matches = $matches;
         return true;
     }
 

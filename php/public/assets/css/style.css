@@ -243,7 +243,7 @@ body{
     }
 }
 
-/*-----Access Boutique----- */
+/*-----Access Store----- */
 
 .access-shop{
     margin : 1em -1rem 0 -1rem;
@@ -288,8 +288,6 @@ body{
     left: 22.5rem;
 }
 
-
-
 .access-shop-btn{
     position: absolute;
     bottom: 2rem;
@@ -297,7 +295,7 @@ body{
 }
 
 
-/*--------Boutique------- */
+/*--------Store------- */
 
 .search-block{
     display: flex;
@@ -308,7 +306,7 @@ body{
 
 .search-bar{
     width: 80%;
-    height: 2rem;
+    height: 3rem;
     background: white;
     padding-left: 1rem;
     padding-right: 1rem;
@@ -323,25 +321,153 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 2rem;
+    height: 3rem;
     background: var(--primary);
     border: 1px solid #444;
     border-top-right-radius: 30px;
     border-bottom-right-radius: 30px;
-    padding-right: 0.5rem;
-    padding-left: 0.5rem;
+    padding-right: 1rem;
+    padding-left: 1rem;
     box-shadow: 1px 1px 5px 1px var(--grey);
     cursor: pointer;
 }
 
 .search-btn i{
-    font-size: 1rem;
+    font-size: 1.5rem;
 }
 
 .underline{
     width: 20%
 }
 
-.products-block{
-    margin-top: 1rem;
+.products-container{
+    margin-top: 2rem;
 }
+
+.product-block{
+    border: 1px solid var(--grey);
+    padding : 1.5rem;
+    background: white;
+    border-radius: 1.25rem;
+    margin-bottom: 3.5rem;
+    box-shadow: var(--box-shadow);
+}
+
+.product-pic img{
+    border: 1px solid var(--grey);
+    max-height: 40rem;
+    box-shadow: var(--mini-box-shadow);
+    margin-bottom: 1rem;
+}
+
+.product-name{
+    text-decoration: underline;
+    display: inline-block;
+}
+
+.action-block{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-price{
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.add-btn{
+    padding : 1rem 2rem;
+    background: var(--primary);
+    color: var(--grey);
+    font-weight: bold;
+    border-radius: 10px;
+    border : none;
+    box-shadow: var(--mini-box-shadow);
+    cursor : pointer;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* rating block */
+
+.rating-container{
+    display: flex;
+    align-items: flex-start;
+}
+
+.notice{
+    margin-left: 0.5rem;
+}
+
+.star {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+}
+
+.star-inner {
+    width: 100%;
+    height: 100%;
+    background: url('../images/star.png');
+    background-size: contain;
+
+}
+
+.star-filled{
+    background: url('../images/filledstar.png') no-repeat;
+    background-size: contain;
+    z-index : 2;
+}
+
+.star-three-quarters{
+    background: url('../images/threequartersstar.png') no-repeat;
+    background-size: contain;
+
+}
+
+.star-half{
+    background: url('../images/halfstar.png') no-repeat;
+    background-size: contain;
+
+}
+
+.star-quarter{
+    background: url('../images/quarterstar.png') no-repeat;
+    background-size: contain;
+
+}
+
+.rating-block{
+    display: flex;
+    margin-bottom: 0.7rem;    
+}
+
+/*------ comment -------*/
+
+.comment-container-title{
+    padding-left: 1rem;
+    margin-bottom: 2rem;
+}
+
+.comment-title{
+    font-weight: bold;
+}
+
+.comment-block{
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: white;
+    box-shadow: var(--mini-box-shadow);
+}
+
+.underline-center{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.underline-center hr{
+    background: var(--primary);
+    width: 30%;
+}
+
