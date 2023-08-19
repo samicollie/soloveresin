@@ -9,6 +9,8 @@ $router = new Router($_SERVER['REQUEST_URI']);
 
 $router->get('/', 'Home@index');
 
-$router->get('/bonjour','Home@index');
+$router->get('/store', 'Products@index');
+
+$router->get('/store/product/:id','Products@getProduct');
 
 $router->run();
