@@ -76,9 +76,12 @@ body{
     bottom: 0;
 }
 
-.nav-mobile i{
-    font-size: 2rem;
-    color: #444;
+
+.selected-tab{
+    background: rgba(255, 255,255, 0.3);
+    border-radius: 50%;
+    padding: 0.5rem;
+    box-shadow: var(--mini-box-shadow);
 }
 
 /*-----ads block in homepage----*/
@@ -363,6 +366,11 @@ body{
 .product-name{
     text-decoration: underline;
     display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.product-description{
+    margin-bottom: 1rem;
 }
 
 .action-block{

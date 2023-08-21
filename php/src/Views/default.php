@@ -25,10 +25,30 @@
     </main>
     
     <nav class="nav-mobile">
-        <i class="fa-solid fa-house"></i>
-        <i class="fa-solid fa-user"></i>
-        <i class="fa-solid fa-cart-shopping"></i>
-        <i class="fa-solid fa-bars"></i>
+        <a href="/store">
+            <span class="<?= preg_match("/^\/store/", $_SERVER["REQUEST_URI"]) ? 'selected-tab' : '' ?>">
+                <i class="fa-solid fa-house"></i>
+            </span>
+        </a>
+        <a href="/profile">
+            <span class="<?php if(preg_match("/^\/profile/", $_SERVER["REQUEST_URI"]) ||
+                                preg_match("/^\/login/", $_SERVER["REQUEST_URI"]) ||
+                                preg_match("/^\/register/", $_SERVER["REQUEST_URI"])){
+                                    echo 'selected-tab';
+                                } ?>" >
+                <i class="fa-solid fa-user"></i>
+            </span>
+        </a>
+        <a href="/cart">
+            <span class="<?= preg_match("/^\/cart/", $_SERVER["REQUEST_URI"]) ? 'selected-tab' : '' ?>">
+                <i class="fa-solid fa-cart-shopping"></i>
+            </span>
+        </a>
+        <a href="/menu">
+            <span class="<?= preg_match("/^\/menu/", $_SERVER["REQUEST_URI"]) ? 'selected-tab' : '' ?>">
+                <i class="fa-solid fa-bars"></i>
+            </span>
+        </a>
     </nav>
 </body>
 </html>
