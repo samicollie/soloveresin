@@ -366,11 +366,14 @@ body{
 .product-name{
     text-decoration: underline;
     display: inline-block;
+<<<<<<< HEAD
     margin-bottom: 1rem;
 }
 
 .product-description{
     margin-bottom: 1rem;
+=======
+>>>>>>> 9f0f5ab209f2f37e2ccbc604b3c591cea2c4323e
 }
 
 .action-block{
