@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers;
 
+use App\Models\Cart;
 use App\Models\Pictures;
 
 class HomeController extends Controller {

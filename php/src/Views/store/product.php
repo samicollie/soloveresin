@@ -29,9 +29,12 @@
             <p class="product-description"><?= $product->product_description ?></p>
             <div class="action-block">
                 <p class="product-price"><?= $product->product_price ?> €</p>
-                <a href="#"><button class="add-btn">AJOUTER</button></a>
+                <form action="/cart/add" method="post">
+                    <input type="hidden" name="product_id" value="<?= $product->id_product ?>" >
+                    <input type="hidden" name="current_url" value="<?= $_SERVER['REQUEST_URI'] ?>" >
+                    <button type="submit" class="add-btn">AJOUTER</button>
+                </form>
             </div>
-            
         </figcaption>
     </section>
     <div class="comment-container">

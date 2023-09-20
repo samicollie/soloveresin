@@ -40,7 +40,7 @@ class Model extends Db
 
     public function find(int $id)
     {
-        return $this->request("SELECT * FROM $this->table WHERE id_" . substr(lcfirst($this->table), 0, -1) . " = $id")->fetch();
+        return $this->request("SELECT * FROM $this->table WHERE id_" . lcfirst($this->table) . " = $id")->fetch();
     }
 
     public function create(Model $model)
@@ -80,11 +80,11 @@ class Model extends Db
             //transform fields and options array in a string to insert it in the request
             $listFields = implode(', ', $fields);
             
-            return $this->request("UPDATE $this->table SET $listFields WHERE id_". substr(lcfirst($this->table), 0, -1) ."= ?" , $values);
+            return $this->request("UPDATE $this->table SET $listFields WHERE id_". lcfirst($this->table) ."= ?" , $values);
     }
 
     public function delete(int $id){
-        return $this->request("DELETE FROM $this->table WHERE id_" . substr(lcfirst($this->table), 0, -1) . "= ?", [$id]);
+        return $this->request("DELETE FROM $this->table WHERE id_" . lcfirst($this->table) . "= ?", [$id]);
     }
 
 

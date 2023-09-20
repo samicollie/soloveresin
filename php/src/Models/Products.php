@@ -112,11 +112,7 @@ class Products extends Model
         rating_stats.rating_count
     FROM Products p
     JOIN Pictures pic ON p.id_product = pic.id_product
-<<<<<<< HEAD
     LEFT JOIN (
-=======
-    JOIN (
->>>>>>> 9f0f5ab209f2f37e2ccbc604b3c591cea2c4323e
         SELECT
             c.id_product,
             AVG(c.rating) AS average_rating,
@@ -139,10 +135,7 @@ class Products extends Model
         p.id_product,
         p.name AS product_name,
         p.price AS product_price,
-<<<<<<< HEAD
         p.description AS product_description,
-=======
->>>>>>> 9f0f5ab209f2f37e2ccbc604b3c591cea2c4323e
         pic.filename AS picture_filename,
         rating_stats.average_rating AS average_rating,
         rating_stats.rating_count AS count_rating

@@ -80,8 +80,28 @@ body{
 .selected-tab{
     background: rgba(255, 255,255, 0.3);
     border-radius: 50%;
-    padding: 0.5rem;
     box-shadow: var(--mini-box-shadow);
+    padding: 0.5rem;
+}
+
+.cart-tab{
+    position: relative;
+    margin: 0;
+}
+
+.cart-tab i{
+    display: inline;
+}
+
+.product-counter{
+    font-size: 0.7rem;
+    padding: 0.2rem;
+    background: teal;
+    color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: -2px;
+    right: -2px;
 }
 
 /*-----ads block in homepage----*/
@@ -366,14 +386,11 @@ body{
 .product-name{
     text-decoration: underline;
     display: inline-block;
-<<<<<<< HEAD
     margin-bottom: 1rem;
 }
 
 .product-description{
     margin-bottom: 1rem;
-=======
->>>>>>> 9f0f5ab209f2f37e2ccbc604b3c591cea2c4323e
 }
 
 .action-block{
@@ -482,3 +499,88 @@ body{
     width: 30%;
 }
 
+/*-------Cart-------*/
+
+.cart-container{
+    background: white;
+    box-shadow: var(--box-shadow);
+    padding: 1rem;
+}
+
+.cart-product{
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.product-cart-content{
+    display: flex;
+    flex-direction: row;
+    padding: 1rem;
+    border : 1px solid #444;
+    border-radius: 10px;
+}
+
+.product-cart-content figure{
+    width: 40%;
+}
+
+.product-cart-content figure img{
+    max-height: 12rem;
+    border: 1px solid #444;
+    box-shadow: var(--mini-box-shadow);
+}
+
+.product-cart-content figcaption{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 60%;
+    padding-left: 0.7rem;
+}
+
+.product-cart-content h3 {
+    text-align: right;
+}
+
+.product-cart-content figcaption form{
+    text-align: right;
+}
+
+.quantity_block{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.quantity_product{
+    padding : 0.5rem 0 0.5rem 1rem;
+    margin-left: 0.5rem;
+}
+
+.product-cart-price{
+    text-align: right;
+}
+
+.delete-product-cart{
+padding: 0.5rem 2rem;
+margin-left: 1rem;
+border: none;
+border-radius: 50px;
+background: var(--primary);
+box-shadow: var(--mini-box-shadow);
+}
+
+.total-price{
+    text-align: right;
+    font-weight: bold;
+}
+
+.no-cart-product{
+    height: 20rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}

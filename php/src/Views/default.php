@@ -41,7 +41,10 @@
         </a>
         <a href="/cart">
             <span class="<?= preg_match("/^\/cart/", $_SERVER["REQUEST_URI"]) ? 'selected-tab' : '' ?>">
-                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-tab">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="product-counter"><?=$productCounter ?></span>
+                </span>
             </span>
         </a>
         <a href="/menu">

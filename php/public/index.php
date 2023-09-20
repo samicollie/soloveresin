@@ -13,4 +13,10 @@ $router->get('/store', 'Products@index');
 
 $router->get('/store/product/:id','Products@getProduct');
 
+$router->get('/cart', 'Cart@index');
+
+$router->post('/cart/add', 'Cart@addCartProduct');
+
+$router->post('/cart/delete', 'Cart@deleteCartProduct');
+
 $router->run();
