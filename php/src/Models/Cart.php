@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use DateTime;
+
 class Cart extends Model
 {
     protected $id;
     protected $idUser;
     protected $createdAt;
-    protected $updateAt;
 
     public function __construct()
     {
@@ -77,27 +78,7 @@ class Cart extends Model
     }
 
     /**
-     * Get the value of updateAt
-     */ 
-    public function getUpdateAt()
-    {
-        return $this->updateAt;
-    }
-
-    /**
-     * Set the value of updateAt
-     *
-     * @return  self
-     */ 
-    public function setUpdateAt($updateAt)
-    {
-        $this->updateAt = $updateAt;
-
-        return $this;
-    }
-
-    /**
-     * function return the cart of a user.
+     * return the cart of an user.
      *
      * @param [type] $id
      * @return array
@@ -116,12 +97,169 @@ class Cart extends Model
         return $this->request($sql, [$id])->fetchAll();
     }
 
-    public function getCartNumberProduct(int $id):int
+    /**
+     * return id and quantity of a product in a cart
+     *
+     * @param integer $idCart
+     * @return array
+     */
+    public function getProductsIdFromCart(int $idCart): array
     {
-        $sql ="SELECT count(cp.id_product) AS total_products
-        FROM cart c,
-        LEFT JOIN Cart_Products cp ON cp.id_cart = c.id_cart
-        WHERE c.id_user = ?";
-        return $this->request($sql,[$id])->fetch();
+        $sql="SELECT id_product, quantity FROM Cart_Products 
+        WHERE id_cart = ?";
+        return $this->request($sql, [$idCart])->fetchAll();
+    }
+
+    /**
+     * verify if an user cart exist or not
+     *
+     * @param integer $idUser
+     * @return boolean
+     */
+    public function isExistingCart(int $idUser):int
+    {
+        $sql="SELECT id_cart as id_cart 
+        FROM Cart 
+        WHERE id_user = ?";
+        $result = $this->request($sql, [$idUser])->fetch();
+        if($result){
+            return $result->id_cart; 
+        }else{
+            return 0;
+        }
+    }
+
+    /**
+     * create a cart for an user
+     *
+     * @param integer $idUser
+     * @return void
+     */
+    public function createUserCart(int $idUser):void
+    {
+        $date = new DateTime();
+        $formatedDate = $date->format('Y-m-d');
+        $sql="INSERT INTO Cart (id_user, created_at) VALUES (?, ?)";
+        $this->request($sql, [$idUser, $formatedDate]);
+    }
+
+    /**
+     * return the idCart from an user
+     *
+     * @param integer $idUser
+     * @return integer
+     */
+    public function getIdCart(int $idUser): int
+    {
+        $sql="SELECT id_cart FROM Cart WHERE id_user = ?";
+        $idCart = $this->request($sql, [$idUser])->fetch();
+        return $idCart->id_cart;
+    }
+
+    /**
+     * verify if a product is in an user cart
+     *
+     * @param integer $idCart
+     * @param integer $idProduct
+     * @return boolean
+     */
+    public function isExistingProduct(int $idCart, int $idProduct): bool
+    {
+        $sql="SELECT id_product 
+        FROM Cart_Products 
+        WHERE id_cart = ? AND id_product = ?";
+        $result = $this->request($sql, [$idCart, $idProduct])->fetch();
+        if($result){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * update quantity when the data go from cookie to cart in the database
+     *
+     * @param integer $idProduct
+     * @param integer $idCart
+     * @param integer $quantity
+     * @return void
+     */
+    public function updateQuantity(int $idCart, int $idProduct, int $quantity ): void
+    {
+        $sql="SELECT quantity 
+        FROM Cart_Products 
+        WHERE id_product = ? AND id_cart = ?";
+        $cartQuantity = $this->request($sql, [$idProduct, $idCart])->fetchAll();
+        $quantity += $cartQuantity[0]->quantity;
+        $sql="UPDATE Cart_Products SET quantity = ?
+        WHERE id_product = ? AND id_cart = ?";
+        $this->request($sql, [$quantity, $idProduct, $idCart]);
+    }
+
+    /**
+     * add a product in the database cart from a cart's cookie
+     *
+     * @param integer $idCart
+     * @param integer $idProduct
+     * @param [type] $quantity
+     * @return void
+     */
+    public function fromCookieToCart(int $idCart, int $idProduct,int $quantity):void
+    {
+        $sql="INSERT INTO Cart_Products (id_product, id_cart, quantity) VALUES (?, ?, ?)";
+        $this->request($sql, [$idProduct, $idCart, $quantity]);
+    }
+
+    /**
+     * add a product in an user cart
+     *
+     * @param integer $productId
+     * @param integer $idUser
+     * @return void
+     */
+    public function addProductInCart(int $productId, int $idUser):void
+    {
+        $idCart = $this->isExistingCart($idUser);
+        if($idCart === 0){
+            $this->createUserCart($idUser);
+            $idCart = $this->isExistingCart($idUser);
+        }
+        if($this->isExistingProduct($idCart, $productId )){
+            $this->updateQuantity($idCart, $productId, 1);
+        }else{
+            $sql="INSERT INTO Cart_Products (id_product, id_cart, quantity) VALUES (?, ?, ?)";
+            $this->request($sql, [$productId, $idCart, 1]);
+        }
+    }
+
+    /**
+     * delete a product in a cart
+     *
+     * @param integer $idCart
+     * @param integer $productId
+     * @return void
+     */
+    public function deleteProductInCart(int $idCart, int $productId):void
+    {
+        $sql="DELETE FROM Cart_Products WHERE id_product = ? AND id_cart = ?";
+        $this->request($sql, [$productId, $idCart]);
+
+    }
+
+    /**
+     * return the number of products in an user cart
+     *
+     * @param integer $idCart
+     * @return integer
+     */
+    public function getCartNumberProduct(int $idCart):int
+    {
+        $quantity = 0;
+        $products = $this->getProductsIdFromCart($idCart);
+        foreach($products as $product){
+            $q = $product->quantity;
+            $quantity += $q;
+        }
+        return $quantity;
     }
 }

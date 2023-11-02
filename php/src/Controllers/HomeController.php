@@ -6,6 +6,11 @@ use App\Models\Pictures;
 
 class HomeController extends Controller {
 
+    /**
+     * display the landing page
+     *
+     * @return void
+     */
     public function index (){
         $model = new Pictures();
         $arrayALlPictures = $model->findAll();

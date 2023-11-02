@@ -43,7 +43,7 @@
                 <form action="/cart/add" method="post">
                     <input type="hidden" name="product_id" value="<?= $product->id_product ?>" >
                     <input type="hidden" name="current_url" value="<?= $_SERVER['REQUEST_URI'] ?>" >
-                    <button type="submit" class="add-btn">AJOUTER</button>
+                    <button type="submit" class="add-btn primary-btn">AJOUTER</button>
                 </form>
             </div>
             

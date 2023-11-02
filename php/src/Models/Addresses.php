@@ -4,11 +4,12 @@ namespace App\Models;
 class Addresses extends Model
 {
     protected $id;
+    protected $firstname;
+    protected $lastname;
     protected $streetNumber;
     protected $streetName;
     protected $zipcode;
     protected $city;
-    protected $type;
 
     public function __construct()
     {
@@ -117,22 +118,96 @@ class Addresses extends Model
     }
 
     /**
-     * Get the value of type
-     */ 
-    public function getType()
+     * get all addresses of an user
+     *
+     * @param integer $idUser
+     * @return array
+     */
+    public function getAddresses(int $idUser): array
     {
-        return $this->type;
+        $sql="SELECT A.id_address, A.firstname, A.lastname, A.street_number, A.street_name, A.zipcode, A.city FROM Addresses A
+        JOIN Users_Addresses UA ON UA.id_address = A.id_address
+        JOIN Users U ON U.id_user = UA.id_user 
+        WHERE U.id_user = ?";
+        return $this->request($sql, [$idUser])->fetchAll();
     }
 
     /**
-     * Set the value of type
+     * return an address thanks to the id
      *
-     * @return  self
-     */ 
-    public function setType($type)
+     * @param integer $id
+     * @return array
+     */
+    public function getAddress(int $id): array
     {
-        $this->type = $type;
+        $sql = "SELECT * FROM Addresses WHERE id_address = ?";
+        return $this->request($sql, [$id])->fetchAll();
+    }
 
-        return $this;
+    /**
+     * add an address for an user in the database
+     *
+     * @param string $firstname
+     * @param string $lastname
+     * @param string $streetNumber
+     * @param string $streetName
+     * @param string $zipcode
+     * @param string $city
+     * @param integer $idUser
+     * @return boolean
+     */
+    public function addAddress(string $firstname, string $lastname, string $streetNumber, string $streetName, string $zipcode, string $city, int $idUser): bool
+    {
+        $sql ="INSERT INTO Addresses (firstname, lastname, street_number, street_name, zipcode, city) VALUES (?, ?, ?, ?, ?, ?)";
+        if($this->request($sql, [$firstname, $lastname, $streetNumber, $streetName, $zipcode, $city])){
+            $newAddressId = $this->request("SELECT MAX(id_address) as max FROM Addresses")->fetch();
+            $sql="INSERT INTO Users_Addresses (id_user, id_address) VALUES (?, ?)";
+            if($this->request($sql, [$idUser, $newAddressId->max])){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+
+    }
+
+    /**
+     * update an address in the database
+     *
+     * @param string $firstname
+     * @param string $lastname
+     * @param string $streetNumber
+     * @param string $streetName
+     * @param string $zipcode
+     * @param string $city
+     * @param integer $idAddress
+     * @return boolean
+     */
+    public function updateAddress(string $firstname, string $lastname, string $streetNumber, string $streetName, string $zipcode, string $city, int $idAddress): bool
+    {
+        $sql = "UPDATE Addresses SET firstname = ?, lastname = ?, street_number = ?, street_name = ?, zipcode = ?, city = ? WHERE id_address = ?";
+        if($this->request($sql, [$firstname, $lastname, $streetNumber, $streetName, $zipcode, $city, $idAddress])){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * delete an address in the database
+     *
+     * @param integer $idAddress
+     * @return boolean
+     */
+    public function deleteAddress(int $idAddress): bool
+    {
+        $sql="DELETE FROM Addresses WHERE id_address = ?";
+        if($this->request($sql, [$idAddress])){
+            return true;
+        }else{
+            return false;
+        }
     }
 }

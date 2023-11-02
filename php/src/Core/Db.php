@@ -33,7 +33,7 @@ class Db extends PDO
     }
 
     /**
-     * method to allow to get instance of Db class
+     * allow to get instance of Db class
      * @return $instance (contains the only Db instance)
      */
     public static function getInstance():self
