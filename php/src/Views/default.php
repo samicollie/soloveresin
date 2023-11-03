@@ -27,10 +27,17 @@
     <nav class="nav-mobile">
         <a href="/store">
             <span class="<?= preg_match("/^\/store/", $_SERVER["REQUEST_URI"]) ? 'selected-tab' : '' ?>">
-                <i class="fa-solid fa-house"></i>
+                <i class="fa-solid fa-store"></i>
             </span>
         </a>
-        <a href="/profile">
+        <a href="
+        <?php 
+        if($this->isLoggedIn){
+                echo '/profile';
+            }else{
+                echo '/login';
+            } ?>
+        ">
             <span class="<?php if(preg_match("/^\/profile/", $_SERVER["REQUEST_URI"]) ||
                                 preg_match("/^\/login/", $_SERVER["REQUEST_URI"]) ||
                                 preg_match("/^\/register/", $_SERVER["REQUEST_URI"])){

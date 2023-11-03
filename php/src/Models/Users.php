@@ -154,4 +154,89 @@ class Users extends Model
 
         return $this;
     }
+
+    /**
+     * function who returned if an account exist or not
+     *
+     * @param string $email
+     * @return boolean
+     */
+    public function verifyUserAccount(string $email): bool
+    {
+        $sql="SELECT count(id_user) as count_id FROM Users WHERE email = ?";
+        $result = $this->request($sql,[$email])->fetch();
+        if($result->count_id == 0){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    /**
+     * function who add a new user 
+     *
+     * @param string $firstname
+     * @param string $lastname
+     * @param string $email
+     * @param string $password
+     * @return boolean
+     */
+    public function newUser(string $firstname, string $lastname, string $email, string $password):bool
+    {
+        $sql = "INSERT INTO Users (firstname, lastname, email, password, role) VALUES (?, ?, ?, ?, ?)";
+        if($this->request($sql, [$firstname, $lastname, $email, password_hash($password, PASSWORD_ARGON2I), '["ROLE_USER"]'])){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Function who return an user from email
+     *
+     * @param string $email
+     * @return self
+     */
+    public function getUser(string $email):array
+    {
+        $sql="SELECT id_user as id_user, email as email, password as password, role as role  FROM Users WHERE email= ?";
+        return $this->request($sql, [$email])->fetchAll();
+    }
+
+    /**
+     * function who return an user from id_user
+     *
+     * @param integer $id
+     * @return array
+     */
+    public function getUserById(int $id): array{
+        $sql="SELECT * FROM Users WHERE id_user = ?";
+        return $this->request($sql, [$id])->fetchAll();
+    }
+
+    public function getUserIdBySessionId(string $sessionId): int
+    {
+        $sql = "SELECT id_user FROM Session WHERE session_id = ?";
+        return $this->request($sql, [$sessionId])->fetch()->id_user;
+    }
+
+    /**
+     * function who update user information and contact
+     *
+     * @param string $firstname
+     * @param string $lastname
+     * @param string $email
+     * @param string $phoneNumber
+     * @param integer $id
+     * @return boolean
+     */
+    public function updateUser(string $firstname, string $lastname, string $email, string $phoneNumber ,int $id): bool
+    {
+        $sql ="UPDATE Users SET firstname = ?, lastname = ?, email = ?, phone_number = ? WHERE id_user = ?";
+        if($this->request($sql, [$firstname, $lastname, $email, $phoneNumber, $id])){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

@@ -97,7 +97,7 @@ class Products extends Model
     }
 
     /**
-     * get all the products in the database with their pictures en rating.
+     * get all the products in the database with their pictures and rating.
      *
      * @return array
      */
@@ -124,7 +124,7 @@ class Products extends Model
     }
 
     /**
-     * function which get one Product with pictures and average rating
+     * get one Product with pictures and average rating
      *
      * @param integer $id id_product
      * @return array

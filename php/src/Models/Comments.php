@@ -138,7 +138,7 @@ class Comments extends Model
     }
 
     /**
-     * function which return all comments for one product with fullname of user.
+     * return all comments for one product with fullname of user.
      *
      * @param integer $id id_product
      * @return array $comments

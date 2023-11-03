@@ -4,16 +4,32 @@ namespace App\Controllers;
 
 use App\Models\Cart;
 use App\Models\Products;
+use App\Models\Session;
 
 class CartController extends Controller
 {
+    /**
+     * display the cart of an user
+     *
+     * @return void
+     */
     public function index()
     {
         $cart = [];
-        if(isset($_SESSION['id_user'])){
-            $id = $_SESSION['id_user'];
-            $cartModel = new Cart;
-            $cart = $cartModel->getUserCart($id);
+        $idCart = $_COOKIE['cartId'] ?? '';
+        $cartSignature = $_COOKIE['cartSignature'] ?? '';
+        if($idCart && $cartSignature){
+            $hash = hash_hmac('sha256', $idCart, 'Mot de Passe de Signature');
+            $match = hash_equals($cartSignature, $hash);
+            if($match){
+                $cartModel = new Cart;
+                $cartProductsId = $cartModel->getProductsIdFromCart($idCart);
+                $productModel = new Products;
+                foreach($cartProductsId as $cartItem){
+                    $product = $productModel->getOneProduct($cartItem->id_product)[0];
+                    $cart[] = [$product, $cartItem->quantity];
+                }
+            }
         }else{
             if(isset($_COOKIE['cart'])){
                 $cartTemp = json_decode($_COOKIE['cart'], true);
@@ -29,63 +45,87 @@ class CartController extends Controller
         $this->render("cart/index", "Mon Panier", ["cart" => $cart]);
     }
 
+    /**
+     * add a product in a cart in bdd if user is logged in else in a cookie
+     *
+     * @return void
+     */
     public function addCartProduct()
     {
-        if($_POST['product_id']){
-            $id = $_POST['product_id'];
+        if(isset($_POST['product_id'])){
+            $productId = $_POST['product_id'];
         }
-        if($_POST['current_url']){
+        if(isset($_POST['current_url'])){
             $currentUrl = $_POST['current_url'];
         }
-
-        //get the cart from cookie or create one empty
-        $cart = isset($_COOKIE['cart']) ? json_decode($_COOKIE['cart'], true) : [];
-
-        //verify if the product is in the cart
-        $productIndex = -1;
-        if($cart){
-            foreach($cart as $index => $item){
-                if($item['id'] == $id){
-                    $productIndex = $index;
-                    break;
+        $cart = [];
+        if($this->isLoggedIn){
+            $sessionModel = new Session;
+            $session = $sessionModel->getSession($_COOKIE['session'])[0];
+            $cartModel = new Cart;
+            $cartModel->addProductInCart($productId, $session->id_user);
+        }else{
+        //get the cart from cookie or create one
+            if(isset($_COOKIE['cart'])){
+                $cart = json_decode($_COOKIE['cart'], true);
+                //verify if the product is in the cart
+                $productIndex = -1;
+                foreach($cart as $index => $item){
+                    if($item['id'] == $productId){
+                        $productIndex = $index;
+                        break;
+                    }
                 }
+
+                if($productIndex !== -1){
+                    $cart[$productIndex]['quantity'] += 1 ;
+                }else{
+                    $cart[]= [
+                        'id' => intval($productId),
+                        'quantity' => 1
+                    ];
+                }
+                $cartData = json_encode($cart);
+                setcookie('cart', $cartData, time()+ 1209600, '/');
+            }else{
+                $cart[] = [
+                    'id' => intval($productId),
+                    'quantity' => 1
+                ];
+                $cartData = json_encode($cart);
+                setcookie('cart', $cartData, time() +  1209600, '/');
             }
         }
-
-        if($productIndex !== -1){
-            $cart[$productIndex]['quantity'] += 1 ;
-        }else{
-            $cart[]= [
-                'id' => intval($id),
-                'quantity' => 1
-            ];
-        }
-        $cartData = json_encode($cart);
-        setcookie('cart', $cartData, time()+ 1209600, '/');
-
         header('location: ' . $currentUrl);
-
     }
 
+    /**
+     * delete a cookie in bdd if user is logged in else in a cookie
+     *
+     * @return void
+     */
     public function deleteCartProduct()
     {
+
         if(isset($_POST['product_id'])){
-            $id_product = $_POST['product_id'];
+            $productId = $_POST['product_id'];
         }
-        if(isset($_SESSION['id_user'])){
-            $cartDelete = new Cart;
-            $cartDelete->delete($id_product);
+        if($this->isLoggedIn){
+            $sessionModel = new Session;
+            $session = $sessionModel->getSession($_COOKIE['session'])[0];
+            $cartModel = new Cart;
+            $idCart = $cartModel->getIdCart($session->id_user);
+            $cartModel->deleteProductInCart($idCart ,$productId);
         }else{
             $cart = json_decode($_COOKIE['cart'], true);
             foreach($cart as $index => $item){
-                if($item['id'] == $id_product){
+                if($item['id'] == $productId){
                     array_splice($cart, $index, 1);
                 }
             }
             $cartData = json_encode($cart);
             setcookie('cart', $cartData,  time()+ 1209600, '/');
         }
-        
         header('location: /cart');
     }
 }
