@@ -3,7 +3,7 @@
     <div class="underline">
         <hr>
     </div>
-    <form action="/register" method="post">
+    <form class="account-formular" action="/register" method="post">
         <div class="input-block">
             <label for="firstname"> Prénom</label>
             <input type="text" name="firstname" id="firstname" required>

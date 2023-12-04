@@ -11,9 +11,15 @@
     <?php foreach($products as $key => $product): ?>
     <section class="product-block">
         <a href="store/product/<?= $product->id_product ?>">
+            <?php if($product->picture_filename): ?>
             <figure class="product-pic">
                 <img src="/assets/images/<?= $product->picture_filename ?>" alt="<?= $product->product_name ?>">
             </figure>
+            <?php else: ?>
+            <figure class="product-pic">
+                <img src="/assets/images/noimage.png" alt="no image">
+            </figure>
+            <?php endif ?>
         </a>
         <figcaption>
             <div class="rating-container">

@@ -8,7 +8,7 @@
     <div class="underline">
         <hr>
     </div>
-    <form action="/login" method="post">
+    <form class="account-formular" action="/login" method="post">
         <div class="input-block">
             <label for="email"> Email</label>
             <input type="text" name="email" id="email" required>

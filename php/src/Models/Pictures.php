@@ -155,4 +155,78 @@ class Pictures extends Model
 
         return $this;
     }
+
+    /**
+     * verify if a picture exists for a product
+     *
+     * @param integer $productId
+     * @return boolean
+     */
+    public function isPictureExist(int $productId): bool
+    {
+        $sql = "SELECT id_picture  FROM Pictures WHERE id_product = ?";
+        $result = $this->request($sql, [$productId])->fetch();
+        if($result){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * add a picture in the database
+     *
+     * @param string $filename
+     * @param string $path
+     * @param integer $size
+     * @param string $date
+     * @param integer $productId
+     * @return void
+     */
+    public function addPicture(string $filename, string $path, int $size, string $date, int $productId): bool
+    {
+        $sql= "INSERT INTO Pictures (filename, path, size, created_at, id_product) VALUES (?, ?, ?, ?, ?)";
+        if($this->request($sql, [$filename, $path, $size, $date, $productId])){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * update a picture in the database
+     *
+     * @param string $filename
+     * @param integer $size
+     * @param string $date
+     * @param integer $productId
+     * @return void
+     */
+    public function updatePicture( string $filename, int $size, string $date, $productId): bool
+    {
+        $sql="SELECT filename FROM Pictures WHERE id_product = ?";
+        $picture = $this->request($sql, [$productId])->fetch();
+        unlink(ROOT . '/public/assets/images/' . $picture->filename);
+        $sql="UPDATE Pictures SET filename = ?, size = ?, updated_at = ? WHERE id_product = ?";
+        if($this->request($sql, [$filename, $size, $date, $productId])){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * delete a picture
+     *
+     * @param integer $pictureId
+     * @return void
+     */
+    public function deletePicture(int $pictureId):void
+    {
+        $sql = "SELECT filename FROM Pictures WHERE id_picture = ?";
+        $picture = $this->request($sql, [$pictureId])->fetch();
+        unlink(ROOT . '/public/assets/images/' . $picture->filename);
+        $sql="DELETE FROM Pictures WHERE id_picture = ?";
+        $this->request($sql, [$pictureId]);
+    }
 }

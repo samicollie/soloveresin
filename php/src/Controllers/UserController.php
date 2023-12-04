@@ -81,7 +81,7 @@ class UserController extends Controller{
      * @return void
      */
     public function loginUser(){
-        if($this->isLoggedIn){
+        if(!$this->isLoggedIn){
             if(isset($_POST['email']) && isset($_POST['password'])){
                 if(!empty($_POST['email']) && !empty($_POST['password'])){
                     $email = htmlspecialchars(strip_tags($_POST['email']));

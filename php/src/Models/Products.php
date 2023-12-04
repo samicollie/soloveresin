@@ -111,7 +111,7 @@ class Products extends Model
         rating_stats.average_rating,
         rating_stats.rating_count
     FROM Products p
-    JOIN Pictures pic ON p.id_product = pic.id_product
+    LEFT JOIN Pictures pic ON p.id_product = pic.id_product
     LEFT JOIN (
         SELECT
             c.id_product,
@@ -137,6 +137,7 @@ class Products extends Model
         p.price AS product_price,
         p.description AS product_description,
         pic.filename AS picture_filename,
+        pic.id_picture AS id_picture,
         rating_stats.average_rating AS average_rating,
         rating_stats.rating_count AS count_rating
             FROM Products p
@@ -152,6 +153,61 @@ class Products extends Model
             WHERE p.id_product = ?";
 
         return  $this->request($sql,[$id])->fetchAll();
+    }
+
+    /**
+     * return the last id from Products table
+     *
+     * @return integer
+     */
+    public function getLastId(): int
+    {
+        $sql = "SELECT MAX(id_product) as id FROM Products";
+        $result = $this->request($sql)->fetch();
+        return $result->id;
+    }
+
+    /**
+     * add a product in the database
+     *
+     * @param string $name
+     * @param string $price
+     * @param string $description
+     * @return void
+     */
+    public function addProduct(string $name, string $price, string $description): bool
+    {
+        $sql = "INSERT INTO Products (name, description, price) VALUES (?, ?, ?)";
+        if($this->request($sql, [$name, $description, $price])){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * update informations from a product
+     *
+     * @param string $name
+     * @param string $description
+     * @param string $price
+     * @param integer $productId
+     * @return void
+     */
+    public function updateProduct(string $name, string $description, string $price, int $productId): bool
+    {
+        $sql="UPDATE Products SET name = ?, description = ?, price =  ? WHERE id_product = ?";
+        if($this->request($sql, [$name, $description , $price, $productId])){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function deleteProduct(int $idProd):void
+    {
+        $sql = "DELETE FROM Products WHERE id_product = ?";
+        $this->request($sql, [$idProd]);
     }
 
 }

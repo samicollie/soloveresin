@@ -46,6 +46,13 @@
                 <i class="fa-solid fa-user"></i>
             </span>
         </a>
+        <?php if($this->userRole === '["ROLE_ADMIN"]'): ?>
+        <a href="/admin/dashboard">
+            <span class="<?= preg_match("/^\/admin/", $_SERVER["REQUEST_URI"]) ? 'selected-tab' : '' ?>">
+                    <i class="fa-solid fa-gears"></i>
+            </span>
+        </a>
+        <?php else: ?>
         <a href="/cart">
             <span class="<?= preg_match("/^\/cart/", $_SERVER["REQUEST_URI"]) ? 'selected-tab' : '' ?>">
                 <span class="cart-tab">
@@ -54,6 +61,7 @@
                 </span>
             </span>
         </a>
+        <?php endif ?>
         <a href="/menu">
             <span class="<?= preg_match("/^\/menu/", $_SERVER["REQUEST_URI"]) ? 'selected-tab' : '' ?>">
                 <i class="fa-solid fa-bars"></i>
