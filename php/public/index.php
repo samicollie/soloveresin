@@ -45,4 +45,32 @@ $router->get('/profile/address/add', 'User@indexAddAddress');
 
 $router->post('/profile/address/add', 'User@addAddress');
 
+$router->get('/admin/dashboard', 'Admin@index');
+
+$router->get('/admin/products/list', 'Admin@listModifyProducts');
+
+$router->get('/admin/products/modify/:id', 'Admin@modifyProduct');
+
+$router->get('/admin/picture/delete/:id_picture/:id_product', 'Admin@deletePicture');
+
+$router->post('/admin/products/modify', 'Admin@updateProduct');
+
+$router->get('/admin/products/add', 'Admin@indexAddProduct');
+
+$router->post('/admin/products/add', 'Admin@addProduct');
+
+$router->post('/admin/product/delete', 'Admin@deleteProduct');
+
+$router->get('/admin/categories/list', 'Admin@listModifyCategories');
+
+$router->get('/admin/category/add', 'Admin@indexAddCategory');
+
+$router->post('/admin/category/add', 'Admin@addCategory');
+
+$router->get('/admin/category/modify/:id', 'Admin@modifyCategory');
+
+$router->post('/admin/category/modify', 'Admin@updateCategory');
+
+$router->post('/admin/category/delete', 'Admin@deleteCategory');
+
 $router->run();

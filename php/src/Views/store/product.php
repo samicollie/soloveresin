@@ -1,8 +1,14 @@
 <div class="products-container">
     <section class="product-block">
+        <?php if($product->picture_filename): ?>
             <figure class="product-pic">
                 <img src="/assets/images/<?= $product->picture_filename ?>" alt="<?= $product->product_name ?>">
             </figure>
+        <?php else: ?>
+            <figure class="product-pic" >
+                <img src="/assets/images/noimage.png" alt="no image">
+            </figure>
+        <?php endif ?>
         <figcaption>
             <div class="rating-container">
             <ul class="stars-rating" data-rating="<?= $product->average_rating ?>">

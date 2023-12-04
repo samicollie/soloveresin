@@ -52,6 +52,15 @@ body{
     cursor: pointer;
 }
 
+.white-container{
+    padding: 1rem;
+    border: 1px solid #444;
+    border-radius: 10px;
+    background: white;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 2rem;
+}
+
 
 /*--------header---------*/
 
@@ -420,7 +429,7 @@ body{
     animation: pulse 2s ease-in-out infinite;
 }
 
-/* rating block */
+/*------ rating block --------*/
 
 .rating-container{
     display: flex;
@@ -591,19 +600,11 @@ box-shadow: var(--mini-box-shadow);
 
 /*--------- register/login formular -----------*/
 
-.white-container{
-    padding: 1rem;
-    border: 1px solid #444;
-    border-radius: 10px;
-    background: white;
-    box-shadow: var(--box-shadow);
-}
-
 .login-form{
     margin-bottom: 3rem;
 }
 
-.white-container form{
+.account-formular{
     margin-top: 2rem;
 }
 
@@ -654,8 +655,9 @@ box-shadow: var(--mini-box-shadow);
     background-color: rgb(227, 123, 123);
     color : white;
     padding: 1rem;
-    border: 1px solid red;
     border-radius: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid red;
 }
 
 /*----------- profile -----------*/
@@ -830,4 +832,187 @@ box-shadow: var(--mini-box-shadow);
 .address-label{
     padding-left: 1rem;
     margin-bottom: 0.5rem;
+}
+
+/*------------ administrator dashboard-------------*/
+
+.link-admin-container{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    padding: 0.5rem;
+    margin-top: 2rem;
+}
+
+.link-admin-container a{
+    display: block;
+    width: calc(100%/2 - 1%);
+}
+
+.block-link-admin{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    padding: 1.5rem 0.5rem;
+    border: 1px solid var(--grey);
+    border-radius: 15px;
+    margin: 0 1rem 1rem 0;
+    background: var(--primary);
+    font-weight: bold;
+    box-shadow: var(--mini-box-shadow);
+}
+
+.block-link-admin i{
+    font-size: 2.5rem;
+}
+
+/*-------- modify products --------*/
+
+.modify-products-list{
+    margin-top: 2rem;
+}
+
+.row-products{
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    margin-bottom: 2.5rem;
+}
+
+.content-products{
+    width: 65%;
+    display: flex;
+    column-gap: 1rem;
+    align-items: center;
+}
+
+.name-modify-products{
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+}
+
+.action-modify-list{
+    width: 35%;
+    padding-left: 0.5rem;
+    display: flex;
+    align-items: center;
+    column-gap: 1rem;
+    flex-flow: row nowrap;
+}
+
+.thumbnail{
+    border : 1px solid var(--grey);
+    box-shadow: var(--mini-box-shadow);
+    border-radius: 15px;
+    width: 10rem;
+    max-height: 15rem;
+}
+
+.product-form{
+    margin: 2rem 0;
+}
+
+.product-image{
+    margin-bottom: 2rem;
+}
+
+.product-image img {
+    max-height: 40rem;
+    border : 1px solid var(--grey);
+    border-radius: 15px;
+    box-shadow: var(--mini-box-shadow);
+}
+
+.image-block{
+    position: relative;
+}
+
+.delete-picture{
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+.name-price-block{
+    display: flex;
+    flex-direction: row nowrap;
+    column-gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.name-price-content{
+    display: flex;
+    flex-direction: column;
+}
+
+.name-price-content label{
+    padding-left: 1rem;
+}
+
+.name-price-content input{
+    height: 3rem;
+    border-radius: 50px;
+    font-size: 2rem;
+    padding-left: 1rem;
+}
+
+.name-price-content{
+    width: 79%;
+}
+
+.price-content{
+    width: 20%;
+}
+
+.description-block{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+}
+
+.description-block label{
+    padding-left: 1rem;
+}
+
+.description-block textarea{
+    border-radius: 20px;
+    padding: 1rem;
+    min-height: 10rem;
+    font-size: 2rem;
+    resize: none;
+}
+
+.formular-action{
+    display: flex;
+    justify-content: center;
+    column-gap: 1rem;
+}
+
+
+/*----------- modify category -----------*/
+
+.row-category{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin : 1.5rem 0;
+}
+
+.category-formular{
+    margin: 2rem 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.list-categories{
+    margin-top: 1rem;
+}
+
+.category-input{
+    height: 2.5rem;
+    border-radius: 50px;
+    margin: 1rem 0 2rem 0;
+    padding-left: 1rem;
 }
