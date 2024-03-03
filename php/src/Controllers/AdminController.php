@@ -404,4 +404,28 @@ class AdminController extends Controller{
             header("location: /login");
         }
     }
+
+    public function searchProducts()
+    {
+        if($this->isLoggedIn){
+            if($this->userRole === '["ROLE_ADMIN"]'){
+                if(isset($_POST['search'])){
+                    if(!empty($_POST['search'])){
+                        $search = htmlspecialchars(strip_tags(urldecode($_POST['search'])));
+                        $productModel = new Products;
+                        $products = $productModel->searchProducts($search);
+                        $this->renderPartial('admin/searchProducts', ['products' => $products]);
+                    }else{
+                        $productModel = new Products;
+                        $products = $productModel->getAllProducts();
+                        $this->renderPartial('admin/searchProducts', ['products' => $products]);
+                    }
+                }
+            }else{
+                header("location: /profile");
+            }
+        }else{
+            header("location: /login");
+        }
+    }
 }
