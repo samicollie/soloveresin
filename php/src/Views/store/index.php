@@ -47,9 +47,8 @@
             <div class="action-block">
                 <p class="product-price"><?= $product->product_price ?> €</p>
                 <form action="/cart/add" method="post">
-                    <input type="hidden" name="product_id" value="<?= $product->id_product ?>" >
-                    <input type="hidden" name="current_url" value="<?= $_SERVER['REQUEST_URI'] ?>" >
-                    <button type="submit" class="add-btn primary-btn">AJOUTER</button>
+                    <input type="hidden" name="product_id" class="product-id" value="<?= $product->id_product ?>" >
+                    <button type="submit" class="add-btn primary-btn add-cart-btn">AJOUTER</button>
                 </form>
             </div>
             

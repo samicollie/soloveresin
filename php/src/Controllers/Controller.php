@@ -30,25 +30,8 @@ abstract class Controller
         // extract the data
         extract($data);
 
-        //get the number of product in the cart 
-        $productCounter = 0;
-        if(isset($_COOKIE['cart'])) {
-            $cartCounter = json_decode($_COOKIE['cart'], true);
-            foreach($cartCounter as $item) {
-                $productCounter += $item['quantity'];
-            }
-        }
-
-        $idCart = $_COOKIE['cartId'] ?? '';
-        $cartSignature = $_COOKIE['cartSignature'] ?? '';
-        if($idCart && $cartSignature){
-            $hash = hash_hmac('sha256', $idCart, 'Mot de Passe de Signature');
-            $match = hash_equals($cartSignature, $hash);
-            if($match){
-                $cartModel = new Cart;
-                $productCounter = $cartModel->getCartNumberProduct($idCart);
-            }
-        }
+        // get number products in the cart
+        $productCounter = $this->getNumberProductsInCart();
 
         //we start the buffer
         ob_start();
@@ -71,6 +54,35 @@ abstract class Controller
     {
         extract($data);
         require_once ROOT . '/src/Views/' . $filename . '.php';
+    }
+
+    /**
+     * return the number of products in the cart
+     *
+     * @return integer
+     */
+    public function getNumberProductsInCart():int
+    {
+        $productCounter = 0;
+        if(isset($_COOKIE['cart'])) {
+            $cartCounter = json_decode($_COOKIE['cart'], true);
+            foreach($cartCounter as $item) {
+                $productCounter += $item['quantity'];
+            }
+            return $productCounter;
+        }
+
+        $idCart = $_COOKIE['cartId'] ?? '';
+        $cartSignature = $_COOKIE['cartSignature'] ?? '';
+        if($idCart && $cartSignature){
+            $hash = hash_hmac('sha256', $idCart, 'Mot de Passe de Signature');
+            $match = hash_equals($cartSignature, $hash);
+            if($match){
+                $cartModel = new Cart;
+                $productCounter = $cartModel->getCartNumberProduct($idCart);
+            }
+        }
+        return $productCounter;
     }
 
     /**

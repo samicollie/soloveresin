@@ -99,4 +99,38 @@ document.addEventListener('DOMContentLoaded', () => {
             xhr.send(new URLSearchParams(formData));
         });
     }    
+
+    // request adding product in a cart.
+
+    const addButtons = document.querySelectorAll('.add-cart-btn');
+
+    if(addButtons){
+        addButtons.forEach(btn =>{
+            btn.addEventListener('click', (event)=>{
+                event.preventDefault();
+                const form = btn.parentNode;
+                const productId = form.querySelector('.product-id').value;
+                const currentUrl = window.location.href;
+
+                // AJAX request
+                const xhr = new XMLHttpRequest();
+                const formData = new FormData();
+                formData.append("product_id", productId);
+                formData.append("current_url", window.location.href);
+                xhr.open("POST", "/cart/add");
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.onload = () => {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        const data = xhr.responseText;
+                        console.log(data);
+                        document.querySelector('#cart-link').innerHTML = data;
+                    } else {
+                        console.error(`Error: ${xhr.status}`);
+                    }
+                };
+                xhr.send(new URLSearchParams(formData));
+            })
+        });
+    }
+    
 });
