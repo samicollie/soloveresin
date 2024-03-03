@@ -1,14 +1,9 @@
-<div class="search-block">
-    <input id="product-input-search" class="search-bar" type="text" name="search" placeholder="ma recherche...">
-    <button id="product-search-btn" class="search-btn" type="submit" name="valid-search"><i class="fa-solid fa-magnifying-glass"></i></button>
-</div>
-
-<h2>Notre Boutique </h2>
-<div class="underline">
-    <hr>
-</div>
-<div class="products-container" id="content-to-replaced">
-    <?php foreach($products as $key => $product): ?>
+<?php if(!$products): ?>
+    <div class="white-container">
+        Aucun article ne correspond à la recherche.
+    </div>
+<?php endif ?>
+<?php foreach($products as $key => $product): ?>
     <section class="product-block">
         <a href="store/product/<?= $product->id_product ?>">
             <?php if($product->picture_filename): ?>
@@ -56,4 +51,3 @@
         </figcaption>
     </section>
     <?php endforeach ?>
-</div>

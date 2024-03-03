@@ -61,6 +61,19 @@ abstract class Controller
     }
 
     /**
+     * render a part of a view
+     *
+     * @param string $filename
+     * @param array $data
+     * @return void
+     */
+    public function renderPartial(string $filename,array $data = []):void
+    {
+        extract($data);
+        require_once ROOT . '/src/Views/' . $filename . '.php';
+    }
+
+    /**
      * control if a user is logged in.
      *
      * @return boolean

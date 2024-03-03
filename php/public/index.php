@@ -11,6 +11,8 @@ $router->get('/', 'Home@index');
 
 $router->get('/store', 'Products@index');
 
+$router->post('/store', 'Products@searchProducts');
+
 $router->get('/store/product/:id','Products@getProduct');
 
 $router->get('/cart', 'Cart@index');
@@ -48,6 +50,8 @@ $router->post('/profile/address/add', 'User@addAddress');
 $router->get('/admin/dashboard', 'Admin@index');
 
 $router->get('/admin/products/list', 'Admin@listModifyProducts');
+
+$router->post('/admin/products/list', 'Admin@searchProducts');
 
 $router->get('/admin/products/modify/:id', 'Admin@modifyProduct');
 

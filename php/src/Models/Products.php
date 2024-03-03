@@ -204,10 +204,47 @@ class Products extends Model
         }
     }
 
+    /**
+     * delete a product in the database
+     *
+     * @param integer $idProd
+     * @return void
+     */
     public function deleteProduct(int $idProd):void
     {
         $sql = "DELETE FROM Products WHERE id_product = ?";
         $this->request($sql, [$idProd]);
+    }
+
+    /**
+     * search some products in database from criteria
+     *
+     * @param string $search
+     * @return array
+     */
+    public function searchProducts(string $search): array
+    {
+        $sql = "SELECT
+        p.id_product AS id_product,
+        p.name AS product_name,
+        p.price AS product_price,
+        pic.filename AS picture_filename,
+        rating_stats.average_rating,
+        rating_stats.rating_count
+        FROM Products p
+        LEFT JOIN Pictures pic ON p.id_product = pic.id_product
+        LEFT JOIN (
+            SELECT
+                c.id_product,
+                AVG(c.rating) AS average_rating,
+                COUNT(c.id_comment) AS rating_count
+            FROM Comments c
+            GROUP BY c.id_product
+        ) AS rating_stats ON p.id_product = rating_stats.id_product
+        WHERE p.name LIKE ?";
+        $criteria = trim(ucfirst($search)) . '%';
+        return $this->request($sql, [$criteria])->fetchAll();
+
     }
 
 }

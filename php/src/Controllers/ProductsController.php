@@ -36,5 +36,22 @@ class ProductsController extends Controller
 
         $this->render('store/product', 'Produit : ' . $product->product_name , ["product" => $product, "comments" => $comments] );
     }
+
+
+    public function searchProducts()
+    {
+        if(isset($_POST['search'])){
+            if(!empty($_POST['search'])){
+                $search = htmlspecialchars(strip_tags(urldecode($_POST['search'])));
+                $productModel = new Products;
+                $products = $productModel->searchProducts($search);
+                $this->renderPartial('store/searchProducts', ['products' => $products]);
+            }else{
+                $productModel = new Products;
+                $products = $productModel->getAllProducts();
+                $this->renderPartial('store/searchProducts', ['products' => $products]);
+            }
+        }
+    }
     
 }
