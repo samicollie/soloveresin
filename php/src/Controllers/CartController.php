@@ -64,6 +64,16 @@ class CartController extends Controller
             $session = $sessionModel->getSession($_COOKIE['session'])[0];
             $cartModel = new Cart;
             $cartModel->addProductInCart($productId, $session->id_user);
+            $idCart = $_COOKIE['cartId'] ?? '';
+            $cartSignature = $_COOKIE['cartSignature'] ?? '';
+            if($idCart && $cartSignature){
+                $hash = hash_hmac('sha256', $idCart, 'Mot de Passe de Signature');
+                $match = hash_equals($cartSignature, $hash);
+                if($match){
+                    $cartModel = new Cart;
+                    $productCounter = $cartModel->getCartNumberProduct($idCart);
+                }
+            }
         }else{
         //get the cart from cookie or create one
             if(isset($_COOKIE['cart'])){
@@ -87,6 +97,10 @@ class CartController extends Controller
                 }
                 $cartData = json_encode($cart);
                 setcookie('cart', $cartData, time()+ 1209600, '/');
+                $productCounter = 0;
+                foreach($cart as $item) {
+                    $productCounter += $item['quantity'];
+                }
             }else{
                 $cart[] = [
                     'id' => intval($productId),
@@ -94,9 +108,10 @@ class CartController extends Controller
                 ];
                 $cartData = json_encode($cart);
                 setcookie('cart', $cartData, time() +  1209600, '/');
+                $productCounter = 1;
             }
         }
-        header('location: ' . $currentUrl);
+        $this->renderPartial('cart/updateNumberProductsCart', ['productCounter' => $productCounter, 'currentUrl' => $currentUrl]);
     }
 
     /**

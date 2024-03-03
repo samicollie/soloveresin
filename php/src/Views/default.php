@@ -53,7 +53,7 @@
             </span>
         </a>
         <?php else: ?>
-        <a href="/cart">
+        <a href="/cart" id="cart-link">
             <span class="<?= preg_match("/^\/cart/", $_SERVER["REQUEST_URI"]) ? 'selected-tab' : '' ?>">
                 <span class="cart-tab">
                     <i class="fa-solid fa-cart-shopping"></i>
