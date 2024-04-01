@@ -3,12 +3,8 @@
     <div class="underline">
         <hr>
     </div>
-    <?php if(isset($errorMessage)): ?>
-        <div class="error-message">
-            <?= $errorMessage ?>
-        </div>
-    <?php endif ?>
-    <form class="product-form" action="/admin/products/add" method="post" enctype="multipart/form-data">
+    <form id="admin-product-formular" class="product-form add-product-formular" action="/admin/products/add" method="post" enctype="multipart/form-data">
+        <div class="error-message none" id="error-blank"></div>
         <div class="product-informations">
             <div class="product-image"> 
                 <figure class="image-block">
@@ -16,6 +12,8 @@
                 </figure>
                 <input type="file" name="image" accept="images/*">
             </div>
+            <div class="error-message none" id="error-image-type"></div>
+            <div class="error-message none" id="error-image-size"></div>
             <div class="name-price-block">
                 <div class="name-price-content name-content">
                     <label for="name">Nom </label>
@@ -26,6 +24,8 @@
                     <input type="text" name="price" id="price">
                 </div>
             </div>
+            <div class="error-message none" id="error-product-name"></div>
+            <div class="error-message none" id="error-price"></div>
             <div class="description-block">
                 <label for="description">Description </label>
                 <textarea name="description" id="description"></textarea>

@@ -18,7 +18,7 @@
                     <figcaption>
                         <h3><?= $product[0]->product_name ?></h3>
                         <div class="product-cart-price">
-                            <?= $product[0]->product_price ?> €
+                            <?= number_format($product[0]->product_price, 2, ',', '') ?> €
                         </div>
                         <div class="quantity_block">
                             <form action="/cart/delete" method="post">
@@ -52,6 +52,6 @@
         <hr>
     </div>
     <div class="total-price">
-        Sous-Total : <?= $price ?> €
+        Sous-Total : <?= number_format($price, 2, ',', '') ?> €
     </div>
 </div>

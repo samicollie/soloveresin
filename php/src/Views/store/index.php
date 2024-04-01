@@ -45,7 +45,7 @@
             
             <a href="store/product/<?= $product->id_product ?>"><h3 class="product-name"><?= $product->product_name ?></h3></a>
             <div class="action-block">
-                <p class="product-price"><?= $product->product_price ?> €</p>
+                <p class="product-price"><?= number_format($product->product_price, 2, ',', '') ?> €</p>
                 <form action="/cart/add" method="post">
                     <input type="hidden" name="product_id" class="product-id" value="<?= $product->id_product ?>" >
                     <button type="submit" class="add-btn primary-btn add-cart-btn">AJOUTER</button>

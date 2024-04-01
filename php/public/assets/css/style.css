@@ -34,6 +34,10 @@ body{
     color: var(--grey);
 }
 
+.none{
+    display: none;
+}
+
 .circle{
     border-radius: 50%;
 }
@@ -657,7 +661,30 @@ box-shadow: var(--mini-box-shadow);
     padding: 1rem;
     border-radius: 10px;
     margin-bottom: 1rem;
+    margin-top: 0.5rem;
     border: 1px solid red;
+}
+
+/*----------- success Register ----------*/
+
+.success-register-title{
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.success-register-p{
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.success-register-bold{
+    font-weight: bold;
+}
+
+/*----------account verify ----------*/
+
+.account-verify{
+    text-align: center;
 }
 
 /*----------- profile -----------*/

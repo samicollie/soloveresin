@@ -27,9 +27,10 @@ class Products extends Model
     /**
      * Set the value of id
      *
+     * @param int $id
      * @return  self
      */ 
-    public function setId($id)
+    public function setId(int $id)
     {
         $this->id = $id;
 
@@ -47,9 +48,10 @@ class Products extends Model
     /**
      * Set the value of name
      *
+     * @param string $name
      * @return  self
      */ 
-    public function setName($name)
+    public function setName(string $name)
     {
         $this->name = $name;
 
@@ -66,10 +68,10 @@ class Products extends Model
 
     /**
      * Set the value of description
-     *
+     * @param string  $description
      * @return  self
      */ 
-    public function setDescription($description)
+    public function setDescription(string $description)
     {
         $this->description = $description;
 
@@ -89,7 +91,7 @@ class Products extends Model
      *
      * @return  self
      */ 
-    public function setPrice($price)
+    public function setPrice(float $price)
     {
         $this->price = $price;
 
@@ -134,7 +136,7 @@ class Products extends Model
         $sql = "SELECT
         p.id_product,
         p.name AS product_name,
-        p.price AS product_price,
+        FORMAT(p.price, 2) AS product_price,
         p.description AS product_description,
         pic.filename AS picture_filename,
         pic.id_picture AS id_picture,
@@ -175,7 +177,7 @@ class Products extends Model
      * @param string $description
      * @return void
      */
-    public function addProduct(string $name, string $price, string $description): bool
+    public function addProduct(string $name, float $price, string $description): bool
     {
         $sql = "INSERT INTO Products (name, description, price) VALUES (?, ?, ?)";
         if($this->request($sql, [$name, $description, $price])){
@@ -194,7 +196,7 @@ class Products extends Model
      * @param integer $productId
      * @return void
      */
-    public function updateProduct(string $name, string $description, string $price, int $productId): bool
+    public function updateProduct(string $name, string $description, float $price, int $productId): bool
     {
         $sql="UPDATE Products SET name = ?, description = ?, price =  ? WHERE id_product = ?";
         if($this->request($sql, [$name, $description , $price, $productId])){
@@ -227,7 +229,7 @@ class Products extends Model
         $sql = "SELECT
         p.id_product AS id_product,
         p.name AS product_name,
-        p.price AS product_price,
+        FORMAT(p.price,2) AS product_price,
         pic.filename AS picture_filename,
         rating_stats.average_rating,
         rating_stats.rating_count

@@ -3,15 +3,12 @@
     <div class="underline">
         <hr>
     </div>
-    <form class="category-formular" action="/admin/category/add" method="post">
-        <?php if(isset($errorMessage)): ?>
-        <div class="error-message">
-            <?= $errorMessage ?>
-        </div>
-        <?php endif ?>
+    <form id="admin-category-formular" class="category-formular add-category-formular" action="/admin/category/add" method="post">
+        <div class="error-message none" id="error-blank"></div>
         <input type="hidden" name="id_category" >
         <label for="name">Nom</label>
         <input class="category-input" type="text" id="name" name="name" >
+        <div id="error-category" class="error-message none"></div>
         <div class="formular-action">
             <button class="primary-btn modify-btn" type="submit">AJOUTER</button>
             <a href="/admin/dashboard">

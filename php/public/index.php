@@ -27,6 +27,16 @@ $router->get('/login', 'User@indexLogin');
 
 $router->post('/register', 'User@registerUser' );
 
+$router->get('/register/success', 'User@successRegister');
+
+$router->get('/validation/account/:resetToken', 'User@validateAccount');
+
+$router->get('/generate/link', 'User@generateLink');
+
+$router->post('/generate/link', 'User@generateLink');
+
+$router->get('/generate/link/confirmation', 'User@confirmationLink');
+
 $router->post('/login', 'User@loginUser');
 
 $router->get('/profile', 'User@indexProfile');
@@ -76,5 +86,9 @@ $router->get('/admin/category/modify/:id', 'Admin@modifyCategory');
 $router->post('/admin/category/modify', 'Admin@updateCategory');
 
 $router->post('/admin/category/delete', 'Admin@deleteCategory');
+
+$router->get('/contact', 'Home@contactFormular');
+
+$router->post('/contact', 'Home@contactUs');
 
 $router->run();

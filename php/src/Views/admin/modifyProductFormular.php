@@ -3,12 +3,8 @@
     <div class="underline">
         <hr>
     </div>
-    <form class="product-form" action="/admin/products/modify" method="post" enctype="multipart/form-data">
-        <?php if(isset($errorMessage)): ?>
-            <div class="error-message">
-                <?= $errorMessage ?>
-            </div>
-        <?php endif ?>
+    <form id="admin-product-formular" class="product-form modify-product-formular" action="/admin/products/modify" method="post" enctype="multipart/form-data">
+        <div class="error-message none" id="error-blank"></div>
         <input type="hidden" name="id_product" value="<?= $product->id_product ?>">
         <div class="product-informations">
             <div class="product-image">
@@ -29,14 +25,18 @@
                 <?php endif ?>
                 <input type="file" name="image" accept="images/*">
             </div>
+            <div class="error-message none" id="error-image-type"></div>
+            <div class="error-message none" id="error-image-size"></div>
             <div class="name-price-block">
                 <div class="name-price-content name-content">
                     <label for="name">Nom </label>
                     <input type="text" name="name" id="name" value="<?= $product->product_name ?>">
+                    <div class="error-message none" id="error-product-name"></div>
                 </div>
                 <div class="name-price-content price-content">
                     <label for="price">Prix</label>
                     <input type="text" name="price" id="price" value="<?= $product->product_price ?>">
+                    <div class="error-message none" id="error-price"></div>
                 </div>
             </div>
             <div class="description-block">
