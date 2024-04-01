@@ -125,7 +125,8 @@ class Cart extends Model
         if($result){
             return $result->id_cart; 
         }else{
-            return 0;
+            $this->createUserCart($idUser);
+            return $this->isExistingCart($idUser);
         }
     }
 

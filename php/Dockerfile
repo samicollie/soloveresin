@@ -15,5 +15,29 @@ RUN docker-php-ext-install  \
     pdo \
     pdo_mysql
 
-# copy the Composer PHAR from the Composer image into the PHP image
-COPY --from=composer /usr/bin/composer /usr/bin/composer
+# Install Composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
+    && php -r "unlink('composer-setup.php');"
+
+# Copy the entire project into the container
+COPY . /var/www
+
+# Change working directory
+WORKDIR /var/www
+
+# Install PHPMailer
+RUN composer require phpmailer/phpmailer
+
+# Install project dependencies
+RUN composer install
+
+
+# Clean up
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Expose port
+EXPOSE 9000
+
+# Command to run
+CMD ["php-fpm"]

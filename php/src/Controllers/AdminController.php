@@ -5,9 +5,11 @@ namespace App\Controllers;
 use App\Models\Categories;
 use App\Models\Pictures;
 use App\Models\Products;
+use App\Controllers\Traits\Validatortrait;
 use DateTime;
 
 class AdminController extends Controller{
+    use Validatortrait;
 
     /**
      * display the admin dashboard
@@ -57,39 +59,71 @@ class AdminController extends Controller{
             if($this->userRole === '["ROLE_ADMIN"]'){
                 if(isset($_POST['name']) && isset($_POST['price']) && isset($_POST['description'])){
                     if(!empty($_POST['name']) && !empty($_POST['price'])){
-                        $name = htmlspecialchars(strip_tags($_POST['name']));
-                        $price = htmlspecialchars(strip_tags($_POST['price']));
-                        $description = htmlspecialchars(strip_tags($_POST['description']));
-                        $productModel = new Products;
-                        if($productModel->addProduct($name, $price, $description)){
-                            $productId = $productModel->getLastId();
-                            $isPictureAdd = true;
-                            if(is_uploaded_file($_FILES['image']['tmp_name'])){
-                                $uploadFileName = $_FILES['image']['name'];
-                                $sizePicture = $_FILES['image']['size'];
-                                move_uploaded_file($_FILES['image']['tmp_name'], ROOT . '/public/assets/images/' . $uploadFileName);
-                                $date = new DateTime();
-                                $date = $date->format('Y-m-d');
-                                $pictureModel = new Pictures;
-                                $isPictureAdd = $pictureModel->addPicture($uploadFileName, '/images/', $sizePicture, $date, $productId );
+                        if(is_uploaded_file($_FILES['image']['tmp_name'])){
+                            $isFile = true;
+                            if(!$this->isJPEG($_FILES['image']['tmp_name'])){
+                                $errorMessage['imageType'] = "L'image doit être au format JPEG.";
                             }
-                            if($isPictureAdd){
-                                $successMessage = "L'ajout a été fait avec succés.";
-                                $this->render('admin/dashboard' , 'Tableau de bord Administrateur', ['successMessage' => $successMessage]);
-                            }else{
-                                $errorMessage = "Une erreur s'est produite avec l'ajout de l'image.";
-                                $this->render('admin/addProductFormular', 'Ajouter un article', ['errorMessage' => $errorMessage]);
+                            if(!$this->isImageSizeValid($_FILES['image']['tmp_name'])){
+                                $errorMessage['imageSize'] = "L'image est trop grande.";
                             }
                         }else{
-                            $errorMessage = "Une erreur s'est produite avec l'ajout du produit.";
-                            $this->render('admin/addProductFormular', 'Ajouter un article', ['errorMessage' => $errorMessage]);
+                            $isFile = false;
+                        }
+                        if(!$this->validateStringWithOnlyLettersAndDigits($_POST['name'])){
+                            $errorMessage['productName'] = "Le nom de l'article est invalide.";
+                        }
+                        // if(!$this->validatePrice(($_POST['name']))){
+                        //     $errorMessage['price'] = "Le prix n'est pas valide.";
+                        // }
+                        if(!empty($errorMessage)){
+                            $response = ['errorMessage' => $errorMessage];
+                            echo json_encode($response);
+                            exit;
+                        }else{
+                            $name = htmlspecialchars(strip_tags($_POST['name']));
+                            $price = floatval(htmlspecialchars(strip_tags($_POST['price'])));
+                            $description = htmlspecialchars(strip_tags($_POST['description']));
+                            $productModel = new Products;
+                            if($productModel->addProduct($name, $price, $description)){
+                                $productId = $productModel->getLastId();
+                                $isPictureAdd = true;
+                                if($isFile){
+                                    $uploadFileName = $_FILES['image']['name'];
+                                    $sizePicture = $_FILES['image']['size'];
+                                    move_uploaded_file($_FILES['image']['tmp_name'], ROOT . '/public/assets/images/' . $uploadFileName);
+                                    $date = new DateTime();
+                                    $date = $date->format('Y-m-d');
+                                    $pictureModel = new Pictures;
+                                    $isPictureAdd = $pictureModel->addPicture($uploadFileName, '/images/', $sizePicture, $date, $productId );
+                                }
+                                if($isPictureAdd){
+                                    $successMessage = "L'ajout a été fait avec succés.";
+                                    $response = ['success' => true, 'successMessage' => $successMessage];
+                                    echo json_encode($response);
+                                    exit;
+                                }else{
+                                    $errorMessage['request'] = "Une erreur s'est produite avec l'ajout de l'image.";
+                                    $response = ['errorMessage' => $errorMessage];
+                                    echo json_encode($response);
+                                    exit;
+                                }
+                            }else{
+                                $errorMessage['request'] = "Une erreur s'est produite avec l'ajout du produit.";
+                                $response = ['errorMessage' => $errorMessage];
+                                echo json_encode($response);
+                                exit;
+                            }
                         }
                     }else{
-                        $errorMessage = "Veuillez remplir tous les champs.";
-                        $this->render('admin/addProductFormular', 'Ajouter un article', ['errorMessage' => $errorMessage]);
+                        $errorMessage['blank'] = "Veuillez remplir tous les champs.";
+                        $response = ['errorMessage' => $errorMessage];
+                        echo json_encode($response);
+                        exit;
                     }
                 }else{
-                    header("location: /admin/addProductFormular");
+                    echo json_encode('ok');
+                    //header("location: /admin/addProductFormular");
                 }
             }else{
                 header("location: /profile");
@@ -178,45 +212,72 @@ class AdminController extends Controller{
                 if(isset($_POST['name']) && isset($_POST['price']) && isset($_POST['description']) && isset($_POST['id_product'])){
                     $productId = htmlspecialchars(strip_tags($_POST['id_product']));
                     if(!empty($_POST['name']) && !empty($_POST['price']) && !empty($_POST['id_product'])){
-                        $name = htmlspecialchars(strip_tags($_POST['name']));
-                        $price = htmlspecialchars(strip_tags($_POST['price']));
-                        $description = htmlspecialchars(strip_tags($_POST['description']));
-                        $isPictureInDatabase = true;
                         if(is_uploaded_file($_FILES['image']['tmp_name'])){
-                            $uploadFileName= $_FILES['image']['name'];
-                            $sizePicture = $_FILES['image']['size'];
-                            move_uploaded_file($_FILES['image']['tmp_name'], ROOT . '/public/assets/images/' . $uploadFileName);
-                            $pictureModel = new Pictures;
-                            $isExistingPicture = $pictureModel->isPictureExist($productId);
-                            $date = new DateTime();
-                            $date = $date->format('Y-m-d');
-                            if($isExistingPicture){
-                                $isPictureInDatabase = $pictureModel->updatePicture($uploadFileName, $sizePicture, $date, $productId);
-                            }else{
-                                $isPictureInDatabase = $pictureModel->addPicture($uploadFileName, '/images/', $sizePicture, $date, $productId);
+                            $isFile = true;
+                            if(!$this->isJPEG($_FILES['image']['tmp_name'])){
+                                $errorMessage['imageType'] = "L'image doit être au format JPEG.";
                             }
-                        }
-                        $productModel = new Products;
-                        if($productModel->updateProduct($name, $description,$price, $productId)){
-                            if($isPictureInDatabase){
-                                $successMessage = "La modification a été réalisée avec succés.";
-                                $products = $productModel->getAllProducts();
-                                $this->render('admin/listModifyProducts', 'Liste des articles', ['products' => $products, 'successMessage' => $successMessage]);
-                            }else{
-                                $errorMessage = "Une erreur s'est produite avec l'image.";
-                                $product = $productModel->getOneProduct($productId)[0];
-                                $this->render('admin/modifyProductFormular', 'Modifier un article', ['product' => $product, 'errorMessage' => $errorMessage]);
+                            if(!$this->isImageSizeValid($_FILES['image']['tmp_name'])){
+                                $errorMessage['imageSize'] = "L'image est trop grande.";
                             }
                         }else{
-                            $errorMessage = "Une erreur s'est produite avec la modification de l'article.";
-                            $product = $productModel->getOneProduct($productId)[0];
-                            $this->render('admin/modifyProductFormular', 'Modifier un article', ['product' => $product, 'errorMessage' => $errorMessage]);
+                            $isFile = false;
+                        }
+                        if(!$this->validateStringWithOnlyLettersAndDigits($_POST['name'])){
+                            $errorMessage['productName'] = "Le nom de l'article est invalide";
+                        }
+                        // if(!$this->validatePrice(($_POST['name']))){
+                        //     $errorMessage['productName'] = "Le prix n'est pas valide.";
+                        // }
+
+                        if(!empty($errorMessage)){
+                            $response = ['errorMessage' => $errorMessage];
+                            echo json_encode($response);
+                            exit;
+                        }else{
+                            $name = htmlspecialchars(strip_tags($_POST['name']));
+                            $price = floatval(htmlspecialchars(strip_tags($_POST['price'])));
+                            $description = htmlspecialchars(strip_tags($_POST['description']));
+                            $isPictureInDatabase = true;
+                            if($isFile){
+                                $uploadFileName= $_FILES['image']['name'];
+                                $sizePicture = $_FILES['image']['size'];
+                                move_uploaded_file($_FILES['image']['tmp_name'], ROOT . '/public/assets/images/' . $uploadFileName);
+                                $pictureModel = new Pictures;
+                                $isExistingPicture = $pictureModel->isPictureExist($productId);
+                                $date = new DateTime();
+                                $date = $date->format('Y-m-d');
+                                if($isExistingPicture){
+                                    $isPictureInDatabase = $pictureModel->updatePicture($uploadFileName, $sizePicture, $date, $productId);
+                                }else{
+                                    $isPictureInDatabase = $pictureModel->addPicture($uploadFileName, '/images/', $sizePicture, $date, $productId);
+                                }
+                            }
+                            $productModel = new Products;
+                            if($productModel->updateProduct($name, $description,$price, $productId)){
+                                if($isPictureInDatabase){
+                                    $successMessage = "La modification a été réalisée avec succés.";
+                                    $response = ['success' => true, 'successMessage' => $successMessage];
+                                    echo json_encode($response);
+                                    exit;
+                                }else{
+                                    $errorMessage['request'] = "Une erreur s'est produite avec l'image.";
+                                    $response = ['errorMessage' => $errorMessage];
+                                    echo json_encode($response);
+                                    exit;
+                                }
+                            }else{
+                                $errorMessage['request'] = "Une erreur s'est produite avec la modification de l'article.";
+                                $response = ['errorMessage' => $errorMessage];
+                                echo json_encode($response);
+                                exit;
+                            }
                         }
                     }else{
-                        $errorMessage = "Veuillez remplir tous les champs.";
-                        $productModel = new Products;
-                        $product = $productModel->getOneProduct($productId)[0];
-                        $this->render('admin/modifyProductFormular', 'Modifier un article', ['product' => $product, 'errorMessage' => $errorMessage]);
+                        $errorMessage['blank'] = "Veuillez remplir tous les champs.";
+                        $response = ['errorMessage' => $errorMessage];
+                        echo json_encode($response);
+                        exit;
                     }
                 }
             }else{
@@ -282,19 +343,33 @@ class AdminController extends Controller{
             if($this->userRole === '["ROLE_ADMIN"]'){
                 if(isset($_POST['name'])){
                     if(!empty($_POST['name'])){
+                        if(!$this->validateStringWithOnlyLettersAndDigits($_POST['name'])){
+                            $errorMessage['categoryName'] = "Le nom de catégorie est invalide.";
+                        }
+                        if(!empty($errorMessage)){
+                            $response = ['errorMessage' => $errorMessage];
+                            echo json_encode($response);
+                            exit;
+                        }
                         $name = htmlspecialchars(strip_tags($_POST['name']));
                         $categoryModel = new Categories;
                         $isCreated = $categoryModel->addCategory($name);
                         if($isCreated){
                             $successMessage = "La catégorie a été ajoutée avec succés.";
-                            $this->render('admin/dashboard', 'Tableau de bord administratif', ['successMessage' => $successMessage]);
+                            $response = ['success' => true, 'successMessage' => $successMessage];
+                            echo json_encode($response);
+                            exit;
                         }else{
-                            $errorMessage = "Une erreur s'est produite lors de l'ajout de la catégorie.";
-                            $this->render('admin/addCategoryFormular', 'Ajouter une catégorie', ['errorMessage' => $errorMessage]);
+                            $errorMessage['request'] = "Une erreur s'est produite lors de l'ajout de la catégorie.";
+                            $response = ['errorMessage' => $errorMessage];
+                            echo json_encode($response);
+                            exit;
                         }
                     }else{
-                        $errorMessage = "Veuillez remplir le nom de la catégorie.";
-                        $this->render('admin/addCategoryFormular', 'Ajouter une catégorie', ['errorMessage' => $errorMessage]);
+                        $errorMessage['blank'] = "Veuillez saisir le nom de la catégorie.";
+                        $response = ['errorMessage' => $errorMessage];
+                        echo json_encode($response);
+                        exit;
                     }
                 }
             }else{
@@ -359,23 +434,34 @@ class AdminController extends Controller{
                 if(isset($_POST['id_category']) && isset($_POST['name'])){
                     $idCategory = htmlspecialchars(strip_tags($_POST['id_category']));
                     if(!empty($_POST['name'])){
-                        $name = htmlspecialchars(strip_tags($_POST['name']));
-                        $categoryModel = new Categories;
-                        $isUpdated = $categoryModel->updateCategory($idCategory, $name);
-                        if($isUpdated){
-                            $successMessage = "La modification a été réalisée avec succés";
-                            $categories = $categoryModel->getAllCategories();
-                            $this->render('admin/listModifyCategories', 'Liste des catégories', ['categories' => $categories, 'successMessage' => $successMessage]);
+                        if(!$this->validateStringWithOnlyLettersAndDigits($_POST['name'])){
+                            $errorMessage['categoryName'] = "Le nom de catégorie est invalide.";
+                        }
+                        if(!empty($errorMessage)){
+                            $response = ['errorMessage' => $errorMessage];
+                            echo json_encode($response);
+                            exit;
                         }else{
-                            $errorMessage = "Une erreur s'est produite lors de la modification";
-                            $category = $categoryModel->getOneCategory($idCategory);
-                            $this->render('admin/modifyCategoryFormular', 'Modifier une catégorie', ['category' => $category, 'errorMessage' => $errorMessage]);
+                            $name = htmlspecialchars(strip_tags($_POST['name']));
+                            $categoryModel = new Categories;
+                            $isUpdated = $categoryModel->updateCategory($idCategory, $name);
+                            if($isUpdated){
+                                $successMessage = "La modification a été réalisée avec succés";
+                                $response = ['success' => true, 'successMessage' => $successMessage];
+                                echo json_encode($response);
+                                exit;
+                            }else{
+                                $errorMessage['categoryName'] = "Une erreur s'est produite lors de la modification.";
+                                $response = ['errorMessage' => $errorMessage];
+                                echo json_encode($response);
+                                exit;
+                            }
                         }
                     }else{
-                        $errorMessage = "Veuillez saisir le nom de la catégorie.";
-                        $categoryModel = new Categories;
-                        $category = $categoryModel->getOneCategory($idCategory);
-                        $this->render('admin/modifyCategoryFormular', 'Modifier une catégorie', ['category' => $category, 'errorMessage' => $errorMessage]);
+                        $errorMessage['blank'] = "Veuillez saisir le nom de la catégorie.";
+                        $response = ['errorMessage' => $errorMessage];
+                        echo json_encode($response);
+                        exit;
                     }
                 }
             }

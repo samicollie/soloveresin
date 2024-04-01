@@ -1,10 +1,5 @@
-<?php if(isset($successMessage)): ?>
-    <div class="success-message">
-        <?= $successMessage ?>
-    </div>
-<?php endif ?>
-
 <div class="white-container">
+    <div id="success-message" class="success-message none"></div>
     <h2>
         Espace administration
     </h2>

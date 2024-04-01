@@ -3,32 +3,33 @@
     <div class="underline">
         <hr>
     </div>
-    <form class="account-formular" action="/register" method="post">
+    <form class="account-formular" id="register-formular" action="/register" method="post">
         <div class="input-block">
             <label for="firstname"> Prénom</label>
             <input type="text" name="firstname" id="firstname" required>
+            <div class="error-message none" id="error-firstname"></div>
         </div>
         <div class="input-block">
             <label for="lastname"> Nom</label>
             <input type="text" name="lastname" id="lastname" required>
+            <div class="error-message none" id="error-lastname"></div>
         </div>
         <div class="input-block">
             <label for="email"> Email</label>
             <input type="text" name="email" id="email" required>
+            <div class="error-message none" id="error-email"></div>
         </div>
         <div class="input-block">
             <label for="password"> Mot de passe</label>
             <input type="password" name="password" id="password" required>
+            <div class="error-message none" id="error-password"></div>
         </div>
         <div class="input-block">
             <label for="confirmation-password">Confirmation du mot de passe</label>
             <input type="password" name="confirmation-password" id="confirmation-password" required>
+            <div class="error-message none" id="error-confirmation-password"></div>
         </div>
-        <?php if(isset($errorMessage)): ?>
-        <div class="error-message">
-            <?= $errorMessage ?>
-        </div>
-        <?php endif ?>
+        <div class="error-message none" id="error-blank"></div>
         <div class="register-action-block">
             <button class="register-btn primary-btn">S'ENREGISTRER</button>
         </div>

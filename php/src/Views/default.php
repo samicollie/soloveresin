@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Coda&display=swap" rel="stylesheet"> 
     <link rel="stylesheet" type="text/css" href="/assets/css/style.css" >
-    <script src="/assets/js/index.js"></script>   
+    <script src="/assets/js/index.js" type="module"></script>   
     <title><?= $title ?></title>
 </head>
 <body>
