@@ -56,6 +56,21 @@ body{
     cursor: pointer;
 }
 
+.high-btn{
+    padding : 1rem 1rem;
+    border-radius: 50px;
+    margin : 1rem 0;
+}
+
+.large-btn{
+    padding : 0.5rem 2rem;
+    border-radius: 50px;
+}
+
+.large-btn i{
+    font-weight: bold;
+}
+
 .white-container{
     padding: 1rem;
     border: 1px solid #444;
@@ -630,15 +645,20 @@ box-shadow: var(--mini-box-shadow);
     height: 3rem;
 }
 
+.forgot-password{
+    padding-left: 0.5rem;
+    margin-top: -1.5rem;
+}
+
+.forgot-password a{
+    text-decoration: underline;
+    color:blue;
+    font-size: 1rem;
+}
+
 .register-action-block{
     display: flex;
     justify-content: flex-end;
-}
-
-.register-btn{
-    padding : 1rem 1rem;
-    border-radius: 50px;
-    margin : 1rem 0;
 }
 
 .new-account{
@@ -651,7 +671,8 @@ box-shadow: var(--mini-box-shadow);
     color : white;
     padding: 1rem;
     border-radius: 10px;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
     border : 1px solid green;
 }
 
@@ -663,6 +684,20 @@ box-shadow: var(--mini-box-shadow);
     margin-bottom: 1rem;
     margin-top: 0.5rem;
     border: 1px solid red;
+}
+
+.input-password{
+    position: relative;
+}
+.input-password input{
+    width: 100%;
+}
+
+.eye-icon{
+    
+    position: absolute;
+    right: 1rem;
+    top: 0.75rem;
 }
 
 /*----------- success Register ----------*/
@@ -685,6 +720,17 @@ box-shadow: var(--mini-box-shadow);
 
 .account-verify{
     text-align: center;
+    padding-bottom: 2rem;
+}
+
+.account-verify h3{
+    margin-bottom: 2rem;
+}
+
+/*---------- reset password ----------*/
+
+.reset-password{
+    margin-top: 1.5rem;
 }
 
 /*----------- profile -----------*/
@@ -742,15 +788,6 @@ box-shadow: var(--mini-box-shadow);
     margin-top: 0;
 }
 
-.modify-btn{
-    padding : 0.5rem 2rem;
-    border-radius: 50px;
-}
-
-.modify-btn i{
-    font-weight: bold;
-}
-
 .delete-btn{
     padding : 0.5rem 2rem;
     border-radius: 50px;
@@ -802,12 +839,8 @@ box-shadow: var(--mini-box-shadow);
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.save-btn{
-    padding: 1rem 1.5rem;
-    border-radius: 50px;
-    margin: 1rem 0;
+    margin: 2rem 0;
+    column-gap: 1rem;
 }
 
 /*--------- modify address --------*/

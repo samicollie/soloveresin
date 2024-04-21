@@ -14,7 +14,7 @@
                 <p><?= $category->name ?></p>
                 <div class="action-modify-list">
                 <a href="/admin/category/modify/<?= $category->id_category ?>">
-                    <button class="primary-btn modify-btn">
+                    <button class="primary-btn large-btn">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </button>
                 </a>

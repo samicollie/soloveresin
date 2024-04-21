@@ -30,7 +30,7 @@ class ProductsController extends Controller
     {
         $id = intval($param[0]);
         $modelProduct = new Products;
-        $product= $modelProduct->getOneProduct($id)[0];
+        $product= $modelProduct->getOneProduct($id);
         $modelComment = new Comments;
         $comments = $modelComment->getComments($id);
 

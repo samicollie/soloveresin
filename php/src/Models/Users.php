@@ -161,7 +161,7 @@ class Users extends Model
      * @param string $email
      * @return boolean
      */
-    public function verifyUserAccount(string $email): bool
+    public function isExistingAccount(string $email): bool
     {
         $sql="SELECT count(id_user) as count_id FROM Users WHERE email = ?";
         $result = $this->request($sql,[$email])->fetch();
@@ -181,10 +181,10 @@ class Users extends Model
      * @param string $password
      * @return boolean
      */
-    public function newUser(string $firstname, string $lastname, string $email, string $password, string $resetToken, string $createdAt):bool
+    public function newUser(string $firstname, string $lastname, string $email, string $password):bool
     {
-        $sql = "INSERT INTO Users (firstname, lastname, email, password, role, reset_token, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        if($this->request($sql, [$firstname, $lastname, $email, password_hash($password, PASSWORD_ARGON2I), '["ROLE_USER"]', $resetToken, $createdAt])){
+        $sql = "INSERT INTO Users (firstname, lastname, email, password, role) VALUES (?, ?, ?, ?, ?)";
+        if($this->request($sql, [$firstname, $lastname, $email, password_hash($password, PASSWORD_ARGON2I), '["ROLE_USER"]'])){
             return true;
         }else{
             return false;
@@ -207,11 +207,12 @@ class Users extends Model
      * function who return an user from id_user
      *
      * @param integer $id
-     * @return array
+     * @return object
      */
-    public function getUserById(int $id): array{
+    public function getUserById(int $id): object
+    {
         $sql="SELECT * FROM Users WHERE id_user = ?";
-        return $this->request($sql, [$id])->fetchAll();
+        return $this->request($sql, [$id])->fetchObject();
     }
 
     
@@ -220,12 +221,18 @@ class Users extends Model
      * get an user with his reset token
      *
      * @param string $resetToken
-     * @return array
+     * @return object|null
      */
-    public function getUserWithResetToken(string $resetToken): array
+    public function getUserWithResetToken(string $resetToken): ?object
     {
+        $hashToken = hash('sha256', $resetToken);
         $sql="SELECT * FROM Users WHERE reset_token = ?";
-        return $this->request($sql, [$resetToken])->fetchAll();
+        $user = $this->request($sql, [$hashToken])->fetchObject();
+        if($user){
+            return $user;
+        }else{
+            return null;
+        }
     }
 
     /**
@@ -264,20 +271,26 @@ class Users extends Model
      */
     public function getUserIdBySessionId(string $sessionId): int
     {
+        $hashSessionId = hash('sha256', $sessionId);
         $sql = "SELECT id_user FROM Session WHERE session_id = ?";
-        return $this->request($sql, [$sessionId])->fetch()->id_user;
+        return $this->request($sql, [$hashSessionId])->fetch()->id_user;
     }
 
     /**
      * get user with his email
      *
      * @param string $email
-     * @return array|null
+     * @return object|null
      */
-    public function getUserByEmail(string $email): array|null
+    public function getUserByEmail(string $email): ?object
     {
         $sql="SELECT * FROM Users WHERE email = ?";
-        return $this->request($sql, [$email])->fetchAll();
+        $user = $this->request($sql, [$email])->fetchObject();
+        if($user){
+            return $user;
+        }else{
+            return null;
+        }
     }
 
 
@@ -291,10 +304,10 @@ class Users extends Model
      * @param integer $id
      * @return boolean
      */
-    public function updateUser(string $firstname, string $lastname, string $email, string $phoneNumber ,int $id): bool
+    public function updateUser(string $firstname, string $lastname,string $phoneNumber ,int $id): bool
     {
-        $sql ="UPDATE Users SET firstname = ?, lastname = ?, email = ?, phone_number = ? WHERE id_user = ?";
-        if($this->request($sql, [$firstname, $lastname, $email, $phoneNumber, $id])){
+        $sql ="UPDATE Users SET firstname = ?, lastname = ?, phone_number = ? WHERE id_user = ?";
+        if($this->request($sql, [$firstname, $lastname, $phoneNumber, $id])){
             return true;
         }else{
             return false;
@@ -311,8 +324,9 @@ class Users extends Model
      */
     public function updateResetToken(int $id, string $resetToken, string $createdAt): bool
     {
+        $hashToken = hash('sha256', $resetToken);
         $sql="UPDATE Users SET reset_token = ?, created_at = ? WHERE id_user = ?";
-        if($this->request($sql, [$resetToken, $createdAt, $id])){
+        if($this->request($sql, [$hashToken, $createdAt, $id])){
             return true;
         }else{
             return false;
@@ -328,13 +342,24 @@ class Users extends Model
     public function updateCountLink(int $id): bool
     {
         $sql="SELECT count_link FROM Users WHERE id_user = ?";
-        $countLink = $this->request($sql, [$id])->fetch();
+        $countLink = $this->request($sql, [$id])->fetch()->count_link;
         $sql="UPDATE Users SET count_link = ? WHERE id_user = ?";
         if($this->request($sql, [$countLink, $id])){
             return true;
         }else{
             return false;
         }
+    }
 
+    public function updatePassWordWithtoken(string $password, string $resetToken): bool
+    {
+        $hashPassword = password_hash($password, PASSWORD_ARGON2I);
+        $hashToken = hash('sha256', $resetToken);
+        $sql = "UPDATE Users SET password = ? WHERE reset_token = ?";
+        if($this->request($sql, [$hashPassword, $hashToken])){
+            return true;
+        }else{
+            return false;
+        }
     }
 }

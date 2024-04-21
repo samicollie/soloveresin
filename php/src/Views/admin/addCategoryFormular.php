@@ -7,10 +7,10 @@
         <div class="error-message none" id="error-blank"></div>
         <input type="hidden" name="id_category" >
         <label for="name">Nom</label>
-        <input class="category-input" type="text" id="name" name="name" >
+        <input class="category-input" type="text" id="name" name="category" >
         <div id="error-category" class="error-message none"></div>
         <div class="formular-action">
-            <button class="primary-btn modify-btn" type="submit">AJOUTER</button>
+            <button class="primary-btn large-btn" type="submit">AJOUTER</button>
             <a href="/admin/dashboard">
                 <button class="primary-btn delete-btn" type="button">ANNULER</button>
             </a>

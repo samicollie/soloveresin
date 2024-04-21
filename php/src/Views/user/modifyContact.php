@@ -13,9 +13,7 @@
         <div class="contact-details contact-details-modify">
             <h4>Coordonnées : </h4>
             <p>
-                <label for="email">Email : </label>
-                <input type="email" id="email" name="email" value="<?= $user->email ?>">
-                <div class="error-message none" id="error-email"></div>
+                Email : <?= $user->email ?>
             </p>
             <p class="phone-number">
                 <label for="phone_number">Tel : </label>
@@ -24,7 +22,10 @@
             </p>
         </div>
         <div class="submit-block">
-            <button type="submit" class="primary-btn save-btn">SAUVEGARDER</button>
+            <button type="submit" class="primary-btn large-btn">SAUVEGARDER</button>
+            <a href="/profile">
+                <button class="primary-btn delete-btn" type="button">ANNULER</button>
+            </a>
         </div>
     </form>
 </div>

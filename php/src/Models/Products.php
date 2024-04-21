@@ -7,9 +7,9 @@ class Products extends Model
     protected $id;
     protected $name;
     protected $description;
-    protected $pictures = [];
-    protected $rating = [0, 0];
     protected $price;
+    protected $maxQuantity;
+    protected $announced;
 
     public function __construct()
     {
@@ -99,7 +99,27 @@ class Products extends Model
     }
 
     /**
-     * get all the products in the database with their pictures and rating.
+     * Get the value of maxQuantity
+     */ 
+    public function getMaxQuantity()
+    {
+        return $this->maxQuantity;
+    }
+
+    /**
+     * Set the value of maxQuantity
+     *
+     * @return  self
+     */ 
+    public function setMaxQuantity($maxQuantity)
+    {
+        $this->maxQuantity = $maxQuantity;
+
+        return $this;
+    }
+
+    /**
+     * get all the products in the database with picture and rating.
      *
      * @return array
      */
@@ -129,9 +149,9 @@ class Products extends Model
      * get one Product with pictures and average rating
      *
      * @param integer $id id_product
-     * @return array
+     * @return object
      */
-    public function getOneProduct(int $id): array
+    public function getOneProduct(int $id): object
     {
         $sql = "SELECT
         p.id_product,
@@ -154,7 +174,7 @@ class Products extends Model
             ) AS rating_stats ON p.id_product = rating_stats.id_product
             WHERE p.id_product = ?";
 
-        return  $this->request($sql,[$id])->fetchAll();
+        return  $this->request($sql,[$id])->fetchObject();
     }
 
     /**
@@ -210,12 +230,16 @@ class Products extends Model
      * delete a product in the database
      *
      * @param integer $idProd
-     * @return void
+     * @return boolean
      */
-    public function deleteProduct(int $idProd):void
+    public function deleteProduct(int $idProd):bool
     {
         $sql = "DELETE FROM Products WHERE id_product = ?";
-        $this->request($sql, [$idProd]);
+        if($this->request($sql, [$idProd])){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     /**
@@ -249,4 +273,6 @@ class Products extends Model
 
     }
 
+
+    
 }

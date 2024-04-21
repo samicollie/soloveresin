@@ -2,7 +2,7 @@ export class Validator {
     static firstname = "Le prénom doit contenir entre 3 et 25 caractères sans chiffre ni caractères spéciaux.";
     static lastname = "Le Nom doit contenir entre 2 et 20 caractères sans chiffre ni caractères spéciaux.";
     static email = "L'adresse email n'est pas valide.";
-    static password = "Le mot de passe doit contenir au moins 8 caractère avec une minuscule, une majuscule, un chiffre et un caractère spécial.";
+    static password = "Le mot de passe doit contenir au moins 8 caractères avec une minuscule, une majuscule, un chiffre et un caractère spécial.";
     static confirmPassword = "Les deux mots de passe doivent être identiques.";
     static phoneNumber = "Le numéro de téléphone n'est pas valide.";
     static streetNumber = "Le numéro de rue est invalide.";
@@ -86,7 +86,7 @@ export class Validator {
     //validate the city
     static validateCity(city)
     {
-        const regex = /^[a-zA-Z\s\-]+$/u;
+        const regex = /^[a-zA-ZÀ-ÖØ-öø-ÿ]+(?:-[a-zA-ZÀ-ÖØ-öø-ÿ]+)?$/u;
         return regex.test(city);
     }
     

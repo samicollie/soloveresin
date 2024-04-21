@@ -2,7 +2,7 @@
     <div class="profile-title-block">
         <div class="profile-title">
             <h3>Mon profil </h3>
-            <a href="/profile/contact/modify/<?= $user->id_user ?>"><button class="modify-btn primary-btn"><i class="fa-regular fa-pen-to-square"></i></button></a>
+            <a href="/profile/contact/modify/<?= $user->id_user ?>"><button class="large-btn primary-btn"><i class="fa-regular fa-pen-to-square"></i></button></a>
         </div>
         <a href="/logout"><button class="delete-btn primary-btn"><i class="fa-solid fa-power-off"></i></button></a>
     </div>
@@ -37,7 +37,7 @@
                     <p><?= $address->zipcode ?> <?= $address->city ?></p>
                 </div>
                 <div class="address-action">
-                    <a href="/profile/address/modify/<?= $address->id_address ?>"><button class="modify-btn primary-btn"><i class="fa-regular fa-pen-to-square"></i></button></a>
+                    <a href="/profile/address/modify/<?= $address->id_address ?>"><button class="large-btn primary-btn"><i class="fa-regular fa-pen-to-square"></i></button></a>
                     <form action="/profile/address/delete/" method="post">
                         <input type="hidden" name="id_address" value="<?= $address->id_address ?>">
                         <button type="submit" class="delete-btn primary-btn"><i class="fa-solid fa-trash"></i></button>

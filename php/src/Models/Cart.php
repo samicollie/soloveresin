@@ -83,7 +83,7 @@ class Cart extends Model
      * @param [type] $id
      * @return array
      */
-    public function getUserCart($id): array
+    public function getUserCart($idUser): array
     {
         $sql = "SELECT p.name AS product_name,
             p.id_product AS id_product,
@@ -94,7 +94,7 @@ class Cart extends Model
             JOIN Cart c ON c.id_cart = cp.id_cart
             WHERE c.id_user = ?";
 
-        return $this->request($sql, [$id])->fetchAll();
+        return $this->request($sql, [$idUser])->fetchAll();
     }
 
     /**
@@ -111,12 +111,12 @@ class Cart extends Model
     }
 
     /**
-     * verify if an user cart exist or not
+     * get the id cart with the id of user
      *
      * @param integer $idUser
      * @return boolean
      */
-    public function isExistingCart(int $idUser):int
+    public function getIdCartFromIdUser(int $idUser):int
     {
         $sql="SELECT id_cart as id_cart 
         FROM Cart 
@@ -126,7 +126,7 @@ class Cart extends Model
             return $result->id_cart; 
         }else{
             $this->createUserCart($idUser);
-            return $this->isExistingCart($idUser);
+            return $this->getIdCartFromIdUser($idUser);
         }
     }
 
@@ -142,19 +142,6 @@ class Cart extends Model
         $formatedDate = $date->format('Y-m-d');
         $sql="INSERT INTO Cart (id_user, created_at) VALUES (?, ?)";
         $this->request($sql, [$idUser, $formatedDate]);
-    }
-
-    /**
-     * return the idCart from an user
-     *
-     * @param integer $idUser
-     * @return integer
-     */
-    public function getIdCart(int $idUser): int
-    {
-        $sql="SELECT id_cart FROM Cart WHERE id_user = ?";
-        $idCart = $this->request($sql, [$idUser])->fetch();
-        return $idCart->id_cart;
     }
 
     /**
@@ -205,7 +192,7 @@ class Cart extends Model
      * @param [type] $quantity
      * @return void
      */
-    public function fromCookieToCart(int $idCart, int $idProduct,int $quantity):void
+    public function fromSessionToCart(int $idCart, int $idProduct,int $quantity):void
     {
         $sql="INSERT INTO Cart_Products (id_product, id_cart, quantity) VALUES (?, ?, ?)";
         $this->request($sql, [$idProduct, $idCart, $quantity]);
@@ -220,11 +207,7 @@ class Cart extends Model
      */
     public function addProductInCart(int $productId, int $idUser):void
     {
-        $idCart = $this->isExistingCart($idUser);
-        if($idCart === 0){
-            $this->createUserCart($idUser);
-            $idCart = $this->isExistingCart($idUser);
-        }
+        $idCart = $this->getIdCartFromIdUser($idUser);
         if($this->isExistingProduct($idCart, $productId )){
             $this->updateQuantity($idCart, $productId, 1);
         }else{

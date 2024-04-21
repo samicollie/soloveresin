@@ -36,7 +36,7 @@
             </div>
             <div class="action-modify-list">
                 <a href="/admin/products/modify/<?= $product->id_product ?>">
-                    <button class="primary-btn modify-btn">
+                    <button class="primary-btn large-btn">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </button>
                 </a>

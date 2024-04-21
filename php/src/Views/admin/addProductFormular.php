@@ -31,7 +31,7 @@
                 <textarea name="description" id="description"></textarea>
             </div>
             <div class="formular-action">
-                <button class="primary-btn modify-btn" type="submit">AJOUTER</button>
+                <button class="primary-btn large-btn" type="submit">AJOUTER</button>
                 <a href="/admin/dashboard">
                     <button class="primary-btn delete-btn" type="button">ANNULER</button>
                 </a>

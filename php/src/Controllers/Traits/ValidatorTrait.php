@@ -119,7 +119,7 @@ trait Validatortrait {
      */
     public function validateStreetNumber(string $streetNumber): bool
     {
-        $pattern = '/^\d{1,3}(?:(?:bis|ter)?)$/i';
+        $pattern = '/^(\d{1,3}(?:(?:bis|ter)?))??$/i';
         return preg_match($pattern, $streetNumber);
     }
 
@@ -157,7 +157,7 @@ trait Validatortrait {
      */
     public function validateCity(string $city): bool
     {
-        $pattern = '/^[a-zA-Z\s\-]+$/u';
+        $pattern = '/^[a-zA-ZÀ-ÖØ-öø-ÿ]+(?:-[a-zA-ZÀ-ÖØ-öø-ÿ]+)?$/u';
 
         return preg_match($pattern, $city);
     }
@@ -224,6 +224,95 @@ trait Validatortrait {
     {
         $pattern = '/^[0-9]+(\.[0-9]{1,2})?$/';
         return preg_match($pattern, $price);
+    }
+
+    /**
+     * clean the data from formular fields
+     *
+     * @param array $fields
+     * @return array
+     */
+    public function cleanFields(array $fields): array
+    {
+        $cleanedFields = [];
+        foreach($fields as $fieldName => $fieldValue){
+            //clean the value of the field
+            $cleanedValue = htmlspecialchars(strip_tags($fieldValue));
+            $cleanedFields[$fieldName] = $cleanedValue;
+        }
+        return $cleanedFields;
+    }
+
+    public function cleanUploadedImage(array $files): array
+    {
+        $file = [];
+        if(isset($files['image']['tmp_name'])){
+            $file['imageName'] = htmlspecialchars(strip_tags($files['image']['name']));
+        }
+        if(isset($files['image']['size'])){
+            $file['sizeImage'] = htmlspecialchars(strip_tags($files['image']['size']));
+        }
+        return $file;
+    }
+
+    /**
+     * validate data in formular fields
+     *
+     * @param array $fields
+     * @return array
+     */
+    public function validateFields(array $fields): array
+    {
+        $errorMessage = [];
+
+        if(isset($fields['firstname']) && !$this->validateFirstname($fields['firstname'])){
+            $errorMessage['firstname'] = "Le prénom doit contenir entre 3 et 25 caractères sans chiffre ni caractères spéciaux.";
+        }
+        if(isset($fields['lastname']) && !$this->validateLastname($fields['lastname'])){
+            $errorMessage['lastname'] = "Le Nom doit contenir entre 2 et 20 caractères sans chiffre ni caractères spéciaux.";
+        }
+        if(isset($fields['email']) && !$this->validateEmail($fields['email'])){
+            $errorMessage['email'] = "L'adresse email n'est pas valide.";
+        }
+        if(isset($fields['password']) && !$this->validatePassword($fields['password'])){
+            $errorMessage['password'] = "Le mot de passe doit contenir au moins 8 caractères avec une minuscule, une majuscule, un chiffre et un caractère spécial.";
+        }
+        if(isset($fields['password']) && isset($fields['confirmation-password']) && !$this->validateConfirmPassword($fields['password'], $fields['confirmation-password'])){
+            $errorMessage['confirmationPassword'] = "Les deux mots de passe doivent être identiques.";
+        }
+        if(isset($fields['phone-number']) && !$this->validatePhoneNumber($fields['phone-number'])){
+            $errorMessage['phoneNumber'] = "Le numéro de téléphone n'est pas valide.";
+        }
+        if(isset($fields['street-number']) && !$this->validateStreetNumber($fields['street-number'])){
+            $errorMessage["streetNumber"] = "Le numéro de rue est invalide.";
+        }
+        if(isset($fields['street-name']) && !$this->validateStreetName($fields['street-name'])){
+            $errorMessage["streetName"] = "Le nom de la rue est invalide.";
+        }
+        if(isset($fields['zipcode']) && !$this->validateZipCode($fields['zipcode'])){
+            $errorMessage["zipcode"] = "Le code postal est invalide.";
+        }
+        if(isset($fields['city']) && !$this->validateCity($fields['city'])){
+            $errorMessage["city"] = "La ville est invalide.";
+        }
+        if(isset($fields['name']) && !$this->validateStringWithOnlyLettersAndDigits($_POST['name'])){
+            $errorMessage['productName'] = "Le nom de l'article est invalide.";
+        }
+        if(isset($fields['price']) && !$this->validatePrice(($_POST['price']))){
+            $errorMessage['price'] = "Le prix n'est pas valide.";
+        }
+        if(isset($fields['image']['tmp_name']) && !empty($fields['image']['tmp_name']) && !$this->isJPEG($fields['image']['tmp_name'])){
+            $errorMessage['imageType'] = "L'image doit être au format JPEG.";
+        }
+        if(isset($fileds['image']['tmp_name']) && !empty($fields['image']['tmp_name']) && !$this->isImageSizeValid($fileds['image']['tmp_name'])){
+            $errorMessage['imageSize'] = "L'image est trop grande.";
+        }
+        if(isset($fields['category']) &&!$this->validateStringWithOnlyLettersAndDigits($fields['category'])){
+            $errorMessage['categoryName'] = "Le nom de catégorie est invalide.";
+        }
+
+
+        return  $errorMessage;
     }
 
 }

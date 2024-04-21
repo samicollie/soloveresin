@@ -136,12 +136,12 @@ class Addresses extends Model
      * return an address thanks to the id
      *
      * @param integer $id
-     * @return array
+     * @return object
      */
-    public function getAddress(int $id): array
+    public function getAddress(int $id): object
     {
         $sql = "SELECT * FROM Addresses WHERE id_address = ?";
-        return $this->request($sql, [$id])->fetchAll();
+        return $this->request($sql, [$id])->fetchObject();
     }
 
     /**

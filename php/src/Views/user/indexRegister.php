@@ -21,17 +21,23 @@
         </div>
         <div class="input-block">
             <label for="password"> Mot de passe</label>
-            <input type="password" name="password" id="password" required>
+            <div class="input-password">
+                <input type="password" name="password" id="password" required>
+                <i class="fa-regular fa-eye eye-icon eye-password"></i>
+            </div>
             <div class="error-message none" id="error-password"></div>
         </div>
         <div class="input-block">
             <label for="confirmation-password">Confirmation du mot de passe</label>
-            <input type="password" name="confirmation-password" id="confirmation-password" required>
+            <div class="input-password">
+                <input type="password" name="confirmation-password" id="confirmation-password" required>
+                <i class="fa-regular fa-eye eye-icon eye-confirmation-password"></i>
+            </div>
             <div class="error-message none" id="error-confirmation-password"></div>
         </div>
         <div class="error-message none" id="error-blank"></div>
         <div class="register-action-block">
-            <button class="register-btn primary-btn">S'ENREGISTRER</button>
+            <button class="high-btn primary-btn">S'ENREGISTRER</button>
         </div>
     </form>
 </div>

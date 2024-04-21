@@ -44,7 +44,7 @@
                 <textarea name="description" id="description" cols="30" rows="10"><?= $product->product_description ?></textarea>
             </div>
             <div class="formular-action">
-                <button class="primary-btn modify-btn" type="submit">MODIFIER</button>
+                <button class="primary-btn large-btn" type="submit">MODIFIER</button>
                 <a href="/admin/products/list">
                     <button class="primary-btn delete-btn" type="button">ANNULER</button>
                 </a>

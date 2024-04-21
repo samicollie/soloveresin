@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use DateTime;
+
 class Session extends Model
 {
 
@@ -80,12 +82,13 @@ class Session extends Model
      * function who return an user session
      *
      * @param string $sessionId
-     * @return array
+     * @return object
      */
-    public function getSession(string $sessionId): array
+    public function getSession(string $sessionId): object
     {
+        $hashSessionId = hash('sha256', $sessionId);
         $sql="SELECT * FROM Session WHERE session_id = ?";
-        return $this->request($sql, [$sessionId])->fetchAll();
+        return $this->request($sql, [$hashSessionId])->fetchObject();
     }
 
     /**
@@ -94,10 +97,40 @@ class Session extends Model
      * @param integer $idUser
      * @return void
      */
-    public function addNewSession(string $sessionId, int $idUser):void
+    public function addNewSession(string $sessionId, int $idUser=null):void
     {
-        $sql="INSERT INTO Session (session_id, id_user) VALUES (?, ?)";
-        $this->request($sql, [$sessionId, $idUser]);
+        $hashSessionId = hash('sha256', $sessionId);
+        date_default_timezone_set('Europe/Paris');
+        $date = new DateTime();
+        $lastAction = $date->format('Y-m-d H:i:s');
+        $sql="INSERT INTO Session (session_id, id_user, last_action) VALUES (?, ?, ?)";
+        $this->request($sql, [$hashSessionId, $idUser, $lastAction]);
+    }
+
+    public function AddIdUserSession(string $sessionId, int $idUser):void
+    {
+        $hashSessionId = hash('sha256', $sessionId);
+        date_default_timezone_set('Europe/Paris');
+        $date = new DateTime();
+        $lastAction = $date->format('Y-m-d H:i:s');
+        $sql="UPDATE Session SET id_user = ?, last_action = ? WHERE session_id = ?";
+        $this->request($sql, [$idUser, $lastAction, $hashSessionId]);
+    }
+
+    /**
+     * update the date of last action of an loggin user
+     *
+     * @param string $sessionId
+     * @return void
+     */
+    public function updateSession(string $sessionId):void
+    {
+        $hashSessionId = hash('sha256', $sessionId);
+        date_default_timezone_set('Europe/Paris');
+        $date = new \DateTime();
+        $lastAction = $date->format('Y-m-d H:i:s');
+        $sql = "UPDATE Session SET last_action = ? WHERE session_id = ?";
+        $this->request($sql, [$lastAction, $hashSessionId]);
     }
 
     /**

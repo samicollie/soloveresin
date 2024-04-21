@@ -1,6 +1,8 @@
 <div class="search-block">
     <input id="product-input-search" class="search-bar" type="text" name="search" placeholder="ma recherche...">
-    <button id="product-search-btn" class="search-btn" type="submit" name="valid-search"><i class="fa-solid fa-magnifying-glass"></i></button>
+    <button id="product-search-btn" class="search-btn" type="submit" name="valid-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+    </button>
 </div>
 
 <h2>Notre Boutique </h2>
@@ -56,3 +58,4 @@
     </section>
     <?php endforeach ?>
 </div>
+

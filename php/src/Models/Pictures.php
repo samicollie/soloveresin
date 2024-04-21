@@ -229,4 +229,16 @@ class Pictures extends Model
         $sql="DELETE FROM Pictures WHERE id_picture = ?";
         $this->request($sql, [$pictureId]);
     }
+
+    /**
+     * get the name of a picture with the id of a product
+     *
+     * @param integer $idProduct
+     * @return string
+     */
+    public function getPictureNameWithIdProduct(int $idProduct): string
+    {
+        $sql = "SELECT filename FROM Pictures WHERE id_product = ?";
+        return $this->request($sql, [$idProduct])->fetch()->filename;
+    }
 }

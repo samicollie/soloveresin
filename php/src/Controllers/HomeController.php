@@ -30,18 +30,18 @@ class HomeController extends Controller {
         $this->render('home/contact', 'Nous Contacter');
     }
 
-    public function contactUs(){
-        if(isset($_POST['email']) && isset($_POST['message'])){
-            $email = htmlspecialchars(strip_tags($_POST['email']));
-            $message = htmlspecialchars(strip_tags($_POST['message']));
-            $result = EmailService::sendEmail($email, 'testsoloveresin@gmail.com', 'essai', $message);
-            if($result){
-                header("location: /profile");
-                exit();
-            }else{
-                header("location: /home");
-                exit();
-            }
-        }
-    }
+    // public function contactUs(){
+    //     if(isset($_POST['email']) && isset($_POST['message'])){
+    //         $email = htmlspecialchars(strip_tags($_POST['email']));
+    //         $message = htmlspecialchars(strip_tags($_POST['message']));
+    //         $result = EmailService::sendEmail($email, 'testsoloveresin@gmail.com', 'essai', $message);
+    //         if($result){
+    //             header("location: /profile");
+    //             exit();
+    //         }else{
+    //             header("location: /home");
+    //             exit();
+    //         }
+    //     }
+    // }
 }

@@ -20,11 +20,11 @@
         <div class="address-content">
             <div class="street-number">
                 <label class="address-label" for="street-number">N°</label>
-                <input type="text" name="street_number" id="street-number" class="address-input">
+                <input type="text" name="street-number" id="street-number" class="address-input">
             </div>
             <div class="street-name">
                 <label class="address-label" for="street-name">Nom de rue</label>
-                <input type="text" name="street_name" id="street-name" class="address-input">
+                <input type="text" name="street-name" id="street-name" class="address-input">
             </div>
         </div>
         <div class="error-message none" id="error-street-number"></div>
@@ -42,7 +42,10 @@
             </div>
         </div>
         <div class="submit-block">
-            <button type="submit" class="primary-btn save-btn">SAUVEGARDER</button>
+            <button type="submit" class="primary-btn large-btn">SAUVEGARDER</button>
+            <a href="/profile">
+                <button class="primary-btn delete-btn" type="button">ANNULER</button>
+            </a>
         </div>
     </form>
 </div>

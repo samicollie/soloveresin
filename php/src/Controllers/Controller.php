@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Models\Cart;
 use App\Models\Users;
-use App\Models\Session;
 
 abstract class Controller
 {
@@ -25,7 +24,7 @@ abstract class Controller
      * @param array $data
      * @return void
      */
-    public function render(string $filename,  string $pageTitle, array $data = [],)
+    protected function render(string $filename,  string $pageTitle, array $data = [],)
     {
         // extract the data
         extract($data);
@@ -50,7 +49,7 @@ abstract class Controller
      * @param array $data
      * @return void
      */
-    public function renderPartial(string $filename,array $data = []):void
+    protected function renderPartial(string $filename,array $data = []):void
     {
         extract($data);
         require_once ROOT . '/src/Views/' . $filename . '.php';
@@ -61,25 +60,20 @@ abstract class Controller
      *
      * @return integer
      */
-    public function getNumberProductsInCart():int
+    protected function getNumberProductsInCart():int
     {
         $productCounter = 0;
-        if(isset($_COOKIE['cart'])) {
-            $cartCounter = json_decode($_COOKIE['cart'], true);
-            foreach($cartCounter as $item) {
-                $productCounter += $item['quantity'];
-            }
+        if($this->isLoggedIn()){
+            $idUser = $_SESSION['id_user'];
+            $cartModel = new Cart;
+            $idCart = $cartModel->getIdCartFromIdUser($idUser);
+            $productCounter = $cartModel->getCartNumberProduct($idCart);
             return $productCounter;
         }
-
-        $idCart = $_COOKIE['cartId'] ?? '';
-        $cartSignature = $_COOKIE['cartSignature'] ?? '';
-        if($idCart && $cartSignature){
-            $hash = hash_hmac('sha256', $idCart, 'Mot de Passe de Signature');
-            $match = hash_equals($cartSignature, $hash);
-            if($match){
-                $cartModel = new Cart;
-                $productCounter = $cartModel->getCartNumberProduct($idCart);
+        if(isset($_SESSION['cart'])) {
+            $cart = $_SESSION['cart'];
+            foreach($cart as $item) {
+                $productCounter += $item['quantity'];
             }
         }
         return $productCounter;
@@ -90,27 +84,14 @@ abstract class Controller
      *
      * @return boolean
      */
-    public function isLoggedIn(){
-        $signature = $_COOKIE['signature'] ?? '' ;
-        $session = $_COOKIE['session'] ?? '';
-        if($session && $signature){
-            $hash = hash_hmac('sha256', $session, 'Mot de Passe de Signature');
-            $match = hash_equals($signature, $hash);
-            if($match){
-                $sessionModel = new Session;
-                $activeSession = $sessionModel->getSession($session);
-                if($activeSession){
-                    $userModel = new Users;
-                    $idUser = $userModel->getUserIdBySessionId($session);
-                    $this->userRole = $this->getUserRole($idUser);
-                    return true;
-                }
-            }else{
-                return false;
-            }
-        }else{
+    protected function isLoggedIn(){
+        
+        if(!isset($_SESSION['id_user'])){
             return false;
         }
+        $idUser = $_SESSION['id_user'];
+        $this->userRole = $this->getUserRole($idUser);
+        return true;
     }
 
     /**
@@ -122,11 +103,51 @@ abstract class Controller
     protected function getUserRole(int $idUser): string
     {
         $userModel = new Users;
-        $user = $userModel->getUserById($idUser)[0] ?? '';
+        $user = $userModel->getUserById($idUser) ?? '';
         if($user){
             return $user->role;
         }else{
             return 'none';
+        }
+    }
+
+    /**
+     * send a json response
+     *
+     * @param array $data
+     * @return void
+     */
+    protected function sendJSONResponse(array $data){
+        echo json_encode($data);
+        exit();
+    }
+
+    /**
+     * verify if acces is allowed to the user
+     *
+     * @return boolean
+     */
+    protected function isAccessAllowed(){
+        if(!$this->isLoggedIn){
+            header("location: /login");
+            exit();
+        }
+    }
+
+    /**
+     * verify if user is allowed to access admin page
+     *
+     * @return boolean
+     */
+    protected function isAuthorizedForAdminPage()
+    {
+        if(!$this->isLoggedIn){
+            header("location: /login");
+            exit();
+        }
+        if($this->userRole !== '["ROLE_ADMIN"]'){
+            header("location: /profile");
+            exit();
         }
     }
 }
