@@ -129,6 +129,7 @@ class Products extends Model
         p.id_product AS id_product,
         p.name AS product_name,
         p.price AS product_price,
+        p.announced AS announced,
         pic.filename AS picture_filename,
         rating_stats.average_rating,
         rating_stats.rating_count
@@ -243,6 +244,22 @@ class Products extends Model
     }
 
     /**
+     * get the announced products
+     *
+     * @return array
+     */
+    public function getAnnouncedProducts(): array
+    {
+        $sql="SELECT
+        p.id_product AS id_product,
+        pic.filename AS picture_filename
+            FROM Products p
+                LEFT JOIN Pictures pic ON p.id_product = pic.id_product
+            WHERE p.announced = 1";
+    return $this->request($sql)->fetchAll();
+    }
+
+    /**
      * search some products in database from criteria
      *
      * @param string $search
@@ -273,6 +290,11 @@ class Products extends Model
 
     }
 
+    public function updateToAnnounced(int $id, int $announced):void
+    {
+        $sql = "UPDATE Products SET announced = ? WHERE id_product = ?";
+        $this->request($sql, [$announced, $id]);
+    }
 
     
 }

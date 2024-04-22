@@ -1,7 +1,41 @@
 import {Validator} from "./validator.js";
-import {displaySuccess, displayErrors,displayRating,sendAjaxRequest, togglePasswordField, handleSearch, handleFormSubmit, validateField} from './functions.js';
+import {nextSlide, displaySuccess, displayErrors,displayRating,sendAjaxRequest, togglePasswordField, handleSearch, handleFormSubmit, validateField} from './functions.js';
 // At the loading of the page or when we get the data
 document.addEventListener('DOMContentLoaded', () => {
+
+    //toggle hamburger menu
+    const tabHamburger = document.querySelector("#tab-hamburger-icon");
+    if(tabHamburger){
+        const hamburgerMenu = document.querySelector('.hamburger-menu');
+        const main = document.querySelector('main');
+        let previousTabIndex = -1;
+        //get all tabs in nav mobile
+        const tabsNavMobile = document.querySelectorAll('.nav-mobile a');
+        tabHamburger.addEventListener('click', ()=>{
+            let isTabHamburgerSelected = tabHamburger.classList.contains('selected-tab');
+            if(isTabHamburgerSelected){
+                hamburgerMenu.style.display = 'none';
+                main.classList.remove('none');
+                if (previousTabIndex !== -1) {
+                    //select the tab which is selected before click on hamburger
+                    tabsNavMobile[previousTabIndex].querySelector('span').classList.add('selected-tab');
+                }
+                tabHamburger.classList.remove('selected-tab');
+            }else{
+                hamburgerMenu.style.display = 'block';
+                main.classList.add('none');
+                previousTabIndex = -1;
+                tabsNavMobile.forEach((tab, index) => {
+                    if (tab.querySelector('span').classList.contains('selected-tab')) {
+                        previousTabIndex = index;
+                        tab.querySelector('span').classList.remove('selected-tab');
+                    }
+                });
+                tabHamburger.classList.add('selected-tab');
+            }
+        });
+    }
+
     const currentUrl = window.location.href;
     const ratingsElements = document.querySelectorAll('.stars-rating');
 
@@ -11,6 +45,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const rating = parseFloat(ratingElement.getAttribute('data-rating'));
         displayRating(rating, ratingElement);
     });
+
+
+
+    if(document.querySelector('.carousel-container')){
+        //start the carousel
+        globalThis.currentIndex = 0;
+        globalThis.direction = 1;
+        const carouselImages = document.querySelectorAll('.carousel-slide');
+        const carouselSlide = document.querySelector('.carousel-container');
+        const slideWidth = carouselImages[0].clientWidth;
+        
+        setInterval(() => {
+            nextSlide(carouselImages, carouselSlide, slideWidth)
+        }, 3000);
+    }
         
     //listen search submit in admin area or in store
     const searchInput = document.querySelector('#product-input-search');
@@ -213,6 +262,46 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const url = currentUrl.endsWith('add') ? '/admin/category/add' : '/admin/category/modify';
         handleFormSubmit(adminCategoryForm, url, ()=>{
+            window.location.href = '/admin/dashboard';
+        });
+    }
+
+    //manage the terms of sale formular
+    const termsOfSaleForm = document.querySelector('#terms-of-sale-formular');
+    if(termsOfSaleForm){
+        handleFormSubmit(termsOfSaleForm, '/admin/legalNotices/termsofsale',()=>{
+            window.location.href = '/admin/legalNotices';
+        });
+    }
+
+    //manage privacy policy formular
+    const privacyPolicyForm = document.querySelector('#privacy-policy-formular');
+    if(privacyPolicyForm){
+        handleFormSubmit(privacyPolicyForm, '/admin/legalNotices/privacypolicy',()=>{
+            window.location.href = '/admin/legalNotices';
+        });
+    }
+
+    //manage usage cookie formular
+    const usageCookieForm = document.querySelector('#usage-cookie-formular');
+    if(usageCookieForm){
+        handleFormSubmit(usageCookieForm, '/admin/legalNotices/usagecookie',()=>{
+            window.location.href = '/admin/legalNotices';
+        });
+    }
+
+    //manage contact formular
+    const contactForm = document.querySelector('#contact-formular');
+    if(contactForm){
+        handleFormSubmit(contactForm, '/contactUs',()=>{
+            window.location.href = '/contactUs';
+        });
+    }
+
+    //manage modify landing page formular
+    const modifyLandingPageForm = document.querySelector('#admin-announces-formular');
+    if(modifyLandingPageForm){
+        handleFormSubmit(modifyLandingPageForm, '/admin/announces/modify',()=>{
             window.location.href = '/admin/dashboard';
         });
     }

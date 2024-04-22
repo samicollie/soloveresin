@@ -17,12 +17,27 @@ if(!isset($_SESSION['session_id'])){
     $_SESSION['signature'] = $signature;
     $sessionModel = new Session;
     $sessionModel->addNewSession($sessionId);
-    
+}
+if(isset($_COOKIE['cart'])){
+    $cart = json_decode($_COOKIE['cart'], true);
+    $_SESSION['cart'] = $cart;
 }
 
 $router = new Router($_SERVER['REQUEST_URI']);
 
 $router->get('/', 'Home@index');
+
+$router->get('/termsofsale', 'Home@termsOfSale');
+
+$router->get('/privacypolicy', 'Home@privacyPolicy');
+
+$router->get('/usagecookie', 'Home@usageCookie');
+
+$router->get('/aboutus', 'Home@aboutUs');
+
+$router->get('/contactUs', 'Home@contactUs');
+
+$router->post('/contactUs', 'Home@contactUs');
 
 $router->get('/store', 'Products@index');
 
@@ -112,8 +127,22 @@ $router->post('/admin/category/modify', 'AdminCategories@updateCategory');
 
 $router->post('/admin/category/delete', 'AdminCategories@deleteCategory');
 
-$router->get('/contact', 'Home@contactFormular');
+$router->get('/admin/legalNotices', 'AdminLegalNotices@legalNoticesList');
 
-$router->post('/contact', 'Home@contactUs');
+$router->get('/admin/legalNotices/termsofsale', 'AdminLegalNotices@termsOfSale');
+
+$router->post('/admin/legalNotices/termsofsale', 'AdminLegalNotices@termsOfSale');
+
+$router->get('/admin/legalNotices/privacypolicy', 'AdminLegalNotices@privacyPolicy');
+
+$router->post('/admin/legalNotices/privacypolicy', 'AdminLegalNotices@privacyPolicy');
+
+$router->get('/admin/legalNotices/usagecookie', 'AdminLegalNotices@usageCookie');
+
+$router->post('/admin/legalNotices/usagecookie', 'AdminLegalNotices@usageCookie');
+
+$router->get('/admin/announces/modify', 'AdminAnnounces@modifyAnnounces');
+
+$router->post('/admin/announces/modify', 'AdminAnnounces@modifyAnnounces');
 
 $router->run();

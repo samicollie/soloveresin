@@ -1,5 +1,25 @@
 import { Validator } from "./validator.js";
 
+
+export function nextSlide(carouselImages, carouselSlide, slideWidth) {
+    let currentIndex = globalThis.currentIndex;
+    let direction = globalThis.direction;
+    
+    if (currentIndex >= carouselImages.length - 1) {
+        direction = -1; // reverse the direction
+    }
+    if (currentIndex <= 0) {
+        direction = 1; // come back to the normal direction
+    }
+    currentIndex += direction;
+    carouselSlide.style.transition = 'transform 0.4s ease-in-out';
+    carouselSlide.style.transform = `translateX(${-(slideWidth + 10) * currentIndex}px)`;
+
+    // update the global variables
+    globalThis.currentIndex = currentIndex;
+    globalThis.direction = direction;
+}
+
 // function to display the rating depends on the rating of the product
 export function displayRating(rating, element) {
     const stars = element.querySelectorAll('.star-inner');
