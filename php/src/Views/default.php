@@ -21,12 +21,43 @@
 
     <main class="container">
 
-    <?= $content ?>
+        <?= $content ?>
     </main>
-    
+    <nav class="hamburger-menu">
+        <ul>
+            <li>
+                <a class="link-hamburger-menu" href="#">
+                    <button class="primary-btn high-btn big-btn">
+                        CONDITIONS GENERALES DE VENTE (CGV)
+                    </button>
+                </a>
+            </li>
+            <li>
+                <a class="link-hamburger-menu" href="#">
+                    <button class="primary-btn high-btn big-btn">
+                        POLITIQUE DE CONFIDENTIALITE
+                    </button>
+                </a>
+            </li>
+            <li>
+                <a class="link-hamburger-menu" href="#">
+                    <button class="primary-btn high-btn big-btn">
+                        USAGE DE COOKIE
+                    </button>
+                </a>
+            </li>
+            <li>
+                <a class="link-hamburger-menu" href="#">
+                    <button class="primary-btn high-btn big-btn">
+                        NOUS CONTACTER
+                    </button>
+                </a>
+            </li>    
+        </ul>
+    </nav>
     <nav class="nav-mobile">
         <a href="/store">
-            <span class="<?= preg_match("/^\/store/", $_SERVER["REQUEST_URI"]) ? 'selected-tab' : '' ?>">
+            <span id="link-store" class="<?= preg_match("/^\/store/", $_SERVER["REQUEST_URI"]) ? 'selected-tab' : '' ?>">
                 <i class="fa-solid fa-store"></i>
             </span>
         </a>
@@ -38,7 +69,7 @@
                 echo '/login';
             } ?>
         ">
-            <span class="<?php if(preg_match("/^\/profile/", $_SERVER["REQUEST_URI"]) ||
+            <span id="link-auth" class="<?php if(preg_match("/^\/profile/", $_SERVER["REQUEST_URI"]) ||
                                 preg_match("/^\/login/", $_SERVER["REQUEST_URI"]) ||
                                 preg_match("/^\/register/", $_SERVER["REQUEST_URI"])){
                                     echo 'selected-tab';
@@ -47,14 +78,14 @@
             </span>
         </a>
         <?php if($this->userRole === '["ROLE_ADMIN"]'): ?>
-        <a href="/admin/dashboard">
-            <span class="<?= preg_match("/^\/admin/", $_SERVER["REQUEST_URI"]) ? 'selected-tab' : '' ?>">
+        <a  class="link-nav-mobile" href="/admin/dashboard">
+            <span id="link-admin" class="<?= preg_match("/^\/admin/", $_SERVER["REQUEST_URI"]) ? 'selected-tab' : '' ?>">
                     <i class="fa-solid fa-gears"></i>
             </span>
         </a>
         <?php else: ?>
         <a href="/cart" id="cart-link">
-            <span class="<?= preg_match("/^\/cart/", $_SERVER["REQUEST_URI"]) ? 'selected-tab' : '' ?>">
+            <span id="link-cart" class="<?= preg_match("/^\/cart/", $_SERVER["REQUEST_URI"]) ? 'selected-tab' : '' ?>">
                 <span class="cart-tab">
                     <i class="fa-solid fa-cart-shopping"></i>
                     <span class="product-counter"><?=$productCounter ?></span>
@@ -62,11 +93,10 @@
             </span>
         </a>
         <?php endif ?>
-        <a href="/menu">
-            <span class="<?= preg_match("/^\/menu/", $_SERVER["REQUEST_URI"]) ? 'selected-tab' : '' ?>">
-                <i class="fa-solid fa-bars"></i>
-            </span>
-        </a>
+        <span id="tab-hamburger-icon">
+            <i class="fa-solid fa-bars"></i>
+        </span>
+
     </nav>
 </body>
 </html>

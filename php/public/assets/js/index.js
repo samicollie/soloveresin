@@ -2,6 +2,40 @@ import {Validator} from "./validator.js";
 import {displaySuccess, displayErrors,displayRating,sendAjaxRequest, togglePasswordField, handleSearch, handleFormSubmit, validateField} from './functions.js';
 // At the loading of the page or when we get the data
 document.addEventListener('DOMContentLoaded', () => {
+
+    //toggle hamburger menu
+    const tabHamburger = document.querySelector("#tab-hamburger-icon");
+    if(tabHamburger){
+        const hamburgerMenu = document.querySelector('.hamburger-menu');
+        const main = document.querySelector('main');
+        let previousTabIndex = -1;
+        //get all tabs in nav mobile
+        const tabsNavMobile = document.querySelectorAll('.nav-mobile a');
+        tabHamburger.addEventListener('click', ()=>{
+            let isTabHamburgerSelected = tabHamburger.classList.contains('selected-tab');
+            if(isTabHamburgerSelected){
+                hamburgerMenu.style.display = 'none';
+                main.classList.remove('none');
+                if (previousTabIndex !== -1) {
+                    //select the tab which is selected before click on hamburger
+                    tabsNavMobile[previousTabIndex].querySelector('span').classList.add('selected-tab');
+                }
+                tabHamburger.classList.remove('selected-tab');
+            }else{
+                hamburgerMenu.style.display = 'block';
+                main.classList.add('none');
+                previousTabIndex = -1;
+                tabsNavMobile.forEach((tab, index) => {
+                    if (tab.querySelector('span').classList.contains('selected-tab')) {
+                        previousTabIndex = index;
+                        tab.querySelector('span').classList.remove('selected-tab');
+                    }
+                });
+                tabHamburger.classList.add('selected-tab');
+            }
+        });
+    }
+
     const currentUrl = window.location.href;
     const ratingsElements = document.querySelectorAll('.stars-rating');
 
