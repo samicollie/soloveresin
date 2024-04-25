@@ -1,5 +1,5 @@
 import {Validator} from "./validator.js";
-import {displaySuccess, displayErrors,displayRating,sendAjaxRequest, togglePasswordField, handleSearch, handleFormSubmit, validateField} from './functions.js';
+import {nextSlide, displaySuccess, displayErrors,displayRating,sendAjaxRequest, togglePasswordField, handleSearch, handleFormSubmit, validateField} from './functions.js';
 // At the loading of the page or when we get the data
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -45,6 +45,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const rating = parseFloat(ratingElement.getAttribute('data-rating'));
         displayRating(rating, ratingElement);
     });
+
+
+
+    if(document.querySelector('.carousel-container')){
+        //start the carousel
+        globalThis.currentIndex = 0;
+        globalThis.direction = 1;
+        const carouselImages = document.querySelectorAll('.carousel-slide');
+        const carouselSlide = document.querySelector('.carousel-container');
+        const slideWidth = carouselImages[0].clientWidth;
+        
+        setInterval(() => {
+            nextSlide(carouselImages, carouselSlide, slideWidth)
+        }, 3000);
+    }
         
     //listen search submit in admin area or in store
     const searchInput = document.querySelector('#product-input-search');
@@ -247,6 +262,46 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const url = currentUrl.endsWith('add') ? '/admin/category/add' : '/admin/category/modify';
         handleFormSubmit(adminCategoryForm, url, ()=>{
+            window.location.href = '/admin/dashboard';
+        });
+    }
+
+    //manage the terms of sale formular
+    const termsOfSaleForm = document.querySelector('#terms-of-sale-formular');
+    if(termsOfSaleForm){
+        handleFormSubmit(termsOfSaleForm, '/admin/legalNotices/termsofsale',()=>{
+            window.location.href = '/admin/legalNotices';
+        });
+    }
+
+    //manage privacy policy formular
+    const privacyPolicyForm = document.querySelector('#privacy-policy-formular');
+    if(privacyPolicyForm){
+        handleFormSubmit(privacyPolicyForm, '/admin/legalNotices/privacypolicy',()=>{
+            window.location.href = '/admin/legalNotices';
+        });
+    }
+
+    //manage usage cookie formular
+    const usageCookieForm = document.querySelector('#usage-cookie-formular');
+    if(usageCookieForm){
+        handleFormSubmit(usageCookieForm, '/admin/legalNotices/usagecookie',()=>{
+            window.location.href = '/admin/legalNotices';
+        });
+    }
+
+    //manage contact formular
+    const contactForm = document.querySelector('#contact-formular');
+    if(contactForm){
+        handleFormSubmit(contactForm, '/contactUs',()=>{
+            window.location.href = '/contactUs';
+        });
+    }
+
+    //manage modify landing page formular
+    const modifyLandingPageForm = document.querySelector('#admin-announces-formular');
+    if(modifyLandingPageForm){
+        handleFormSubmit(modifyLandingPageForm, '/admin/announces/modify',()=>{
             window.location.href = '/admin/dashboard';
         });
     }

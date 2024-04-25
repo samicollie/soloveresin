@@ -26,33 +26,46 @@
     <nav class="hamburger-menu">
         <ul>
             <li>
-                <a class="link-hamburger-menu" href="#">
+                <a class="link-hamburger-menu" href="/aboutus">
+                    <button class="primary-btn high-btn big-btn">
+                        A PROPOS DE NOUS
+                    </button>
+                </a>
+            </li>
+            <li>
+                <a class="link-hamburger-menu" href="/contactUs">
+                    <button class="primary-btn high-btn big-btn">
+                        NOUS CONTACTER
+                    </button>
+                </a>
+            </li>    
+            <div class="legal-notices-title">
+                <h3>Mentions légales</h3>
+                <div>
+                    <hr>
+                </div>
+            </div>
+            <li>
+                <a class="link-hamburger-menu" href="/termsofsale">
                     <button class="primary-btn high-btn big-btn">
                         CONDITIONS GENERALES DE VENTE (CGV)
                     </button>
                 </a>
             </li>
             <li>
-                <a class="link-hamburger-menu" href="#">
+                <a class="link-hamburger-menu" href="/privacypolicy">
                     <button class="primary-btn high-btn big-btn">
                         POLITIQUE DE CONFIDENTIALITE
                     </button>
                 </a>
             </li>
             <li>
-                <a class="link-hamburger-menu" href="#">
+                <a class="link-hamburger-menu" href="/usagecookie">
                     <button class="primary-btn high-btn big-btn">
-                        USAGE DE COOKIE
+                        UTILISATION DES COOKIES
                     </button>
                 </a>
             </li>
-            <li>
-                <a class="link-hamburger-menu" href="#">
-                    <button class="primary-btn high-btn big-btn">
-                        NOUS CONTACTER
-                    </button>
-                </a>
-            </li>    
         </ul>
     </nav>
     <nav class="nav-mobile">

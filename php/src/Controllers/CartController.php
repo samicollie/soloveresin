@@ -26,6 +26,12 @@ class CartController extends Controller
                 $cart[] = [$product, $cartItem->quantity];
             }
         }else{
+            $session = $_SESSION['session_id'];
+            $signature = $_SESSION['signature'];
+            $hash = hash_hmac('sha256', $session, $_ENV['SIGN_PASSWORD']);
+            if(!hash_equals($signature, $hash)){
+                header("location: /");
+            }
             if(isset($_SESSION['cart'])){
                 $cartTemp = $_SESSION['cart'];
                 $productModel = new Products;
@@ -58,6 +64,12 @@ class CartController extends Controller
             $cartModel->addProductInCart($productId, $idUser);
             $productCounter = $cartModel->getCartNumberProduct($idCart);
         }else{
+            $session = $_SESSION['session_id'];
+            $signature = $_SESSION['signature'];
+            $hash = hash_hmac('sha256', $session, $_ENV['SIGN_PASSWORD']);
+            if(!hash_equals($signature, $hash)){
+                header("location: /");
+            }
         //get the cart from cookie or create one
             if(isset($_SESSION['cart'])){
                 $cart = $_SESSION['cart'];
@@ -69,7 +81,6 @@ class CartController extends Controller
                         break;
                     }
                 }
-
                 if($productIndex !== -1){
                     $cart[$productIndex]['quantity'] += 1 ;
                 }else{
@@ -116,6 +127,12 @@ class CartController extends Controller
             $idCart = $cartModel->getIdCartFromIdUser($idUser);
             $cartModel->deleteProductInCart($idCart ,$productId);
         }else{
+            $session = $_SESSION['session_id'];
+            $signature = $_SESSION['signature'];
+            $hash = hash_hmac('sha256', $session, $_ENV['SIGN_PASSWORD']);
+            if(!hash_equals($signature, $hash)){
+                header("location: /");
+            }
             $cart = $_SESSION['cart'];
             foreach($cart as $index => $item){
                 if($item['id'] == $productId){

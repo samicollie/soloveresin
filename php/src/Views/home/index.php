@@ -1,24 +1,23 @@
-<div class="ads-news">
-    <h2 class="new-title"><span class="anime-title">Nouvelle collection</span></h2>
-    <div class="ads-new new-1 circle"><img class="ads-pic" src="/assets/images/boucleoreille.jpg" alt="boucle d'oreille"></div>
-    <div class="ads-new new-2 circle"><img class="ads-pic" src="/assets/images/marquepage.jpg" alt="marque page"></div>
-    <div class="ads-new new-3 circle"><img class="ads-pic" src="/assets/images/dessousverre.jpg" alt="dessous de verre"></div>
-    <a href="#"><button class="ads-btn ads-btn-position-1">VOIR</button></a>
-</div>
-<div class="ads-best-rating">
-    <h2 class="ads-rating-title"><span class="anime-title">Coups de coeur</span></h2>
-    <div class="ads-rating ads-rating1 circle"><img class="ads-pic" src="/assets/images/porteclepoisson.jpg" alt="boucle d'oreille"></div>
-    <div class="ads-rating ads-rating2 circle"><img class="ads-pic" src="/assets/images/dominodore.jpg" alt="marque page"></div>
-    <div class="ads-rating ads-rating3 circle"><img class="ads-pic" src="/assets/images/videpoche2.jpg" alt="dessous de verre"></div>
-    <a href="#"><button class="ads-btn ads-btn-position-2">VOIR</button></a>
-</div>
+<div class="white-container">
+    <h2 class="landing-page-title"><?= $carouselTitle ?></h2>
 
-<div class="access-shop">
-    <?php foreach($pictures as $index => $picture): ?>
-        <div class="access-shop-pic product-<?= $index ?>">
-            <img src="assets/images/<?= $picture->filename ?>" alt="images objets en résine">
+    <?php if(isset($announcedProducts) && !empty($announcedProducts)): ?>
+        <div class="carousel-container">
+            <?php foreach($announcedProducts as $product): ?>
+                <div class="carousel-slide">
+                    <a href="store/product/<?= $product->id_product ?>">
+                        <figure class="product-pic">
+                            <img src="/assets/images/<?= $product->picture_filename ?>" alt="<?= $product->product_name ?>">
+                        </figure>
+                    </a>
+                </div>
+                <?php endforeach ?>
         </div>
-    <?php endforeach ?>
-    <a href="/store"><button class="ads-btn access-shop-btn"> ACCES BOUTIQUE</button></a>
+            <?php endif ?>
+        <div class="link-container">
+            <a href="/store">
+                <button class="store-link">ACCEDER A NOTRE BOUTIQUE</button>
+            </a>
+        </div>
 </div>
 

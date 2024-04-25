@@ -10,31 +10,37 @@
         <a href="/admin/products/add">
             <div class="block-link-admin">
                 <i class="fa-solid fa-plus"></i>
-                <p>Ajouter Article</p>
+                <p>Article</p>
             </div>
         </a>
         <a href="/admin/products/list">
             <div class="block-link-admin">
                 <i class="fa-solid fa-pen-to-square"></i>
-                <p>Modifier Articles</p>
+                <p>Articles</p>
             </div>
         </a>
         <a href="/admin/category/add">
             <div class="block-link-admin">
                 <i class="fa-solid fa-plus"></i>
-                <p>Ajouter Catégorie</p>
+                <p>Catégorie</p>
             </div>
         </a>
         <a href="/admin/categories/list">
             <div class="block-link-admin">
                 <i class="fa-solid fa-pen-to-square"></i>
-                <p>Modifier Catégories</p>
+                <p>Catégories</p>
             </div>
         </a>
         <a href="/admin/announces/modify">
             <div class="block-link-admin">
                 <i class="fa-solid fa-pen-to-square"></i>
-                <p>Modifier Annonces</p>
+                <p>Annonces</p>
+            </div>
+        </a>
+        <a href="/admin/legalnotices">
+            <div class="block-link-admin">
+                <i class="fa-solid fa-pen-to-square"></i>
+                <p>Mentions légales</p>
             </div>
         </a>
 
