@@ -415,7 +415,6 @@ main{
 .underline-center{
     display: flex;
     justify-content: center;
-    margin-bottom: 1rem;
 }
 
 .underline-center hr{
@@ -507,6 +506,98 @@ box-shadow: var(--mini-box-shadow);
     justify-content: center;
     align-items: center;
 
+}
+
+.command-price-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.no-command-price-container{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.command-btn-block{
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    margin: 0.5rem 0;
+}
+
+/*-------- order choice addresses -----------*/
+
+.choice-add-address{
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+#addresses-choice-formular{
+    margin-top: 1rem;
+    padding: 0.5rem;
+}
+
+#addresses-choice-formular fieldset{
+    padding : 1rem 1rem;
+    margin-bottom: 2rem;
+    max-height: 25rem;
+    overflow: scroll;
+    border-radius: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1.5rem;
+}
+
+.addresses-content{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#addresses-choice-formular legend{
+    text-align: center;
+}
+
+/*-------- order summary ---------*/
+
+table{
+    margin-top: 1rem;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td, th{
+    border: 1px solid var(--grey);
+    padding : 0.5rem;
+    text-align: center;
+}
+tfoot{
+    font-weight: bold;
+}
+
+/*------- order payment --------*/
+
+#order-payment-formular{
+    margin-top: 1rem;
+}
+
+#date-validity{
+    width: 40%;
+}
+
+#crypto{
+    width: 15%;
+}
+
+.confirmation-order{
+    text-align: center;
+}
+
+.confirmation-order p{
+    padding: 1rem;
 }
 
 /*--------- register/login formular -----------*/

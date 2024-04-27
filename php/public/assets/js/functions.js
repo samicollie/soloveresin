@@ -52,7 +52,8 @@ export function sendAjaxRequest(url,method, formData, JSONResponse,  successCall
                 const response = JSON.parse(xhr.responseText);
                 successCallback(response);
             } else {
-                successCallback(xhr.responseText);
+                const response = xhr.responseText;
+                successCallback(response);
             }
         } else {
             console.error(`Error: ${xhr.status}`);
@@ -157,122 +158,177 @@ export function displayErrors(errors){
         document.querySelector('#error-category').innerText = errors.categoryName;
         document.querySelector('#error-category').style.display = 'block';
     }
+    if(errors.hasOwnProperty('expirationDate')){
+        document.querySelector('#error-expiration-date').innerText = errors.expirationDate;
+        document.querySelector('#error-expiration-date').style.display = 'block';
+    }
+    if(errors.hasOwnProperty('cardNumber')){
+        document.querySelector('#error-card-number').innerText = errors.cardNumber;
+        document.querySelector('#error-card-number').style.display = 'block';
+    }
+    if(errors.hasOwnProperty('cvv')){
+        document.querySelector('#error-cvv').innerText = errors.cvv;
+        document.querySelector('#error-cvv').style.display = 'block';
+    }
+    if(errors.hasOwnProperty('request')){
+        document.querySelector('#error-request').innerText = errors.request;
+        document.querySelector('#error-request').style.display = 'block';
+    }
+    for (const key in errors) {
+        if (errors.hasOwnProperty(key)) {
+            const error = errors[key];
+            const productId = key; // L'ID du produit est la clé de l'erreur
+            const errorElement = document.querySelector(`#error-quantity-${productId}`);
+            if (errorElement) {
+                errorElement.innerText = error;
+                errorElement.style.display = 'block';
+            }
+        }
+    }
+
 }
 
 //reset the error messages 
 export function resetErrorMessages(){
-    //firstname
 
-    const firstname = document.querySelector('#error-firstname');
-    if(firstname){
-        firstname.innerText = '';
-        firstname.style.display = 'none';
-    }
+    const errors = document.querySelectorAll('.error-message');
+    errors.forEach(error => {
+        error.innerText = '';
+        error.style.display = 'none';
+    });
+    // //firstname
 
-    //lastname
-    const lastname = document.querySelector('#error-lastname');
-    if(lastname){
-        lastname.innerText = '';
-        lastname.style.display = 'none';
-    }
+    // const firstname = document.querySelector('#error-firstname');
+    // if(firstname){
+    //     firstname.innerText = '';
+    //     firstname.style.display = 'none';
+    // }
 
-    //email
-    const email = document.querySelector('#error-email');
-    if(email){
-        email.innerText = '';
-        email.style.display = 'none';
-    }
+    // //lastname
+    // const lastname = document.querySelector('#error-lastname');
+    // if(lastname){
+    //     lastname.innerText = '';
+    //     lastname.style.display = 'none';
+    // }
 
-    //password
-    const password = document.querySelector('#error-password');
-    if(password){
-        password.innerText = '';
-        password.style.display = 'none';
-    }
+    // //email
+    // const email = document.querySelector('#error-email');
+    // if(email){
+    //     email.innerText = '';
+    //     email.style.display = 'none';
+    // }
 
-    //phone number
-    const phoneNumber = document.querySelector('#error-phone-number');
-    if(phoneNumber){
-        phoneNumber.innerText = '';
-        phoneNumber.style.display = 'none';
-    }
+    // //password
+    // const password = document.querySelector('#error-password');
+    // if(password){
+    //     password.innerText = '';
+    //     password.style.display = 'none';
+    // }
 
-    //blank
-    const blank = document.querySelector('#error-blank');
-    if(blank){
-        blank.innerText = '';
-        blank.style.display = 'none';
-    }
+    // //phone number
+    // const phoneNumber = document.querySelector('#error-phone-number');
+    // if(phoneNumber){
+    //     phoneNumber.innerText = '';
+    //     phoneNumber.style.display = 'none';
+    // }
 
-    //confimation password
-    const confirmPassword = document.querySelector('#error-confirmation-password');
-    if(confirmPassword){
-        confirmPassword.innerText = '';
-        confirmPassword.style.display = 'none';
-    }
+    // //blank
+    // const blank = document.querySelector('#error-blank');
+    // if(blank){
+    //     blank.innerText = '';
+    //     blank.style.display = 'none';
+    // }
 
-    //street number
-    const streetNumber = document.querySelector('#error-street-number');
-    if(streetNumber){
-        streetNumber.innerText = '';
-        streetNumber.style.display = 'none';
-    }
+    // //confimation password
+    // const confirmPassword = document.querySelector('#error-confirmation-password');
+    // if(confirmPassword){
+    //     confirmPassword.innerText = '';
+    //     confirmPassword.style.display = 'none';
+    // }
 
-    //street number
-    const streetName = document.querySelector('#error-street-name');
-    if(streetName){
-        streetName.innerText = '';
-        streetName.style.display = 'none';
-    }
+    // //street number
+    // const streetNumber = document.querySelector('#error-street-number');
+    // if(streetNumber){
+    //     streetNumber.innerText = '';
+    //     streetNumber.style.display = 'none';
+    // }
 
-    //zipcode
-    const zipcode = document.querySelector('#error-zipcode');
-    if(zipcode){
-        zipcode.innerText = '';
-        zipcode.style.display = 'none';
-    }
+    // //street number
+    // const streetName = document.querySelector('#error-street-name');
+    // if(streetName){
+    //     streetName.innerText = '';
+    //     streetName.style.display = 'none';
+    // }
 
-    //city
-    const city = document.querySelector('#error-city');
-    if(city){
-        city.innerText = '';
-        city.style.display = 'none';
-    }
+    // //zipcode
+    // const zipcode = document.querySelector('#error-zipcode');
+    // if(zipcode){
+    //     zipcode.innerText = '';
+    //     zipcode.style.display = 'none';
+    // }
 
-    //product name
-    const productName = document.querySelector('#error-product-name');
-    if(productName){
-        productName.innerText = '';
-        productName.style.display = 'none';
-    }
+    // //city
+    // const city = document.querySelector('#error-city');
+    // if(city){
+    //     city.innerText = '';
+    //     city.style.display = 'none';
+    // }
 
-    //price
-    const price = document.querySelector('#error-price');
-    if(price){
-        price.innerText = '';
-        price.style.display = 'none';
-    }
+    // //product name
+    // const productName = document.querySelector('#error-product-name');
+    // if(productName){
+    //     productName.innerText = '';
+    //     productName.style.display = 'none';
+    // }
 
-    //image type
-    const imageType = document.querySelector('#error-image-type');
-    if(imageType){
-        imageType.innerText = '';
-        imageType.style.display = 'none';
-    }
+    // //price
+    // const price = document.querySelector('#error-price');
+    // if(price){
+    //     price.innerText = '';
+    //     price.style.display = 'none';
+    // }
 
-    //image size
-    const imageSize = document.querySelector('#error-image-size');
-    if(imageSize){
-        imageSize.innerText = '';
-        imageSize.style.display = 'none';
-    }
+    // //image type
+    // const imageType = document.querySelector('#error-image-type');
+    // if(imageType){
+    //     imageType.innerText = '';
+    //     imageType.style.display = 'none';
+    // }
 
-    //category
-    const category = document.querySelector('#error-category');
-    if(category){
-        category.innerText = '';
-        category.style.display = 'none';
-    }
+    // //image size
+    // const imageSize = document.querySelector('#error-image-size');
+    // if(imageSize){
+    //     imageSize.innerText = '';
+    //     imageSize.style.display = 'none';
+    // }
+
+    // //category
+    // const category = document.querySelector('#error-category');
+    // if(category){
+    //     category.innerText = '';
+    //     category.style.display = 'none';
+    // }
+
+    // //expiration date
+    // const expirationDate = document.querySelector('#error-expiration-date');
+    // if(expirationDate){
+    //     expirationDate.innerText = '';
+    //     expirationDate.style.display = 'none';
+    // }
+
+    // //paiement card number
+    // const cardNumber = document.querySelector('#error-card-number');
+    // if(cardNumber){
+    //     cardNumber.innerText = '';
+    //     cardNumber.style.display = 'none';
+    // }
+
+    // //the cvv
+    // const cvv = document.querySelector('#error-cvv');
+    // if(cvv){
+    //     cvv.innerText = '';
+    //     cvv.style.display = 'none';
+    // }
 }
 
 //toggle the view of password in a password field
@@ -309,6 +365,9 @@ export function handleFormSubmit(form, url, successCallback){
             if (xhr.readyState == 4 && xhr.status == 200) {
                 const response = JSON.parse(xhr.responseText);
                 if(response.success){
+                    if(response.orderNumber){
+                        localStorage.setItem("orderNumber", response.orderNumber);
+                    }
                     if(response.message){
                         localStorage.setItem("successMessage",response.message);
                     }

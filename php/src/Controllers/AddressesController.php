@@ -19,9 +19,13 @@ class AddressesController extends Controller
      *
      * @return void
      */
-    public function indexAddAddress(){
+    public function indexAddAddress(array $param=null){
         $this->isAccessAllowed();
-        $this->render("user/indexAddAddressFormular", "Ajouter une adresse");
+        $order = false;
+        if(!empty($param)){
+            $order = true;
+        }
+        $this->render("user/indexAddAddressFormular", "Ajouter une adresse", ['order' => $order]);
     }
 
     /**
@@ -31,8 +35,7 @@ class AddressesController extends Controller
     */
     public function addAddress(){
         $this->isAccessAllowed();
-        $sessionModel = new Session;
-        $idUser = $sessionModel->getSession($_COOKIE['session'])->id_user;
+        $idUser = $_SESSION['id_user'];
         $fields = $this->cleanFields($_POST);
         $errorMessage = $this->validateFields($fields);
         $firstname = $fields['firstname'] ?? '';
@@ -49,13 +52,11 @@ class AddressesController extends Controller
             $this->sendJSONResponse(['errorMessage' => $errorMessage]);
         }
         $addressModel = new Addresses;
-        $result = $addressModel->addAddress($firstname, $lastname, $streetNumber, $streetName, $zipcode, $city, $idUser);
-        if($result){
-            $this->sendJSONResponse(['success' => true]);
-        }else{
+        if(!$addressModel->addAddress($firstname, $lastname, $streetNumber, $streetName, $zipcode, $city, $idUser)){
             $errorMessage['request']= "Une erreur s'est produite lors de l'ajout";
             $this->sendJSONResponse(['errorMessage' => $errorMessage]);
         }
+        $this->sendJSONResponse(['success' => true]);
     }
 
     /**
@@ -97,18 +98,16 @@ class AddressesController extends Controller
         }
 
         $addressModel = new Addresses;
-        if(isset($_POST['id_address'])){
-            $idAddress = htmlspecialchars(strip_tags($_POST['id_address']));
-            $result = $addressModel->updateAddress($firstname, $lastname, $streetNumber, $streetName, $zipcode, $city, $idAddress);
-            if($result){
-                $this->sendJSONResponse(['success' => true]);
-            }else{
-                $errorMessage['request'] ="Une erreur s'est produite.";
-                $this->sendJSONResponse(['errorMessage' => $errorMessage]);
-            }
-        }else{
+        if(!isset($_POST['id_address'])){
             header("location: /profile");
+            exit();
         }
+        $idAddress = htmlspecialchars(strip_tags($_POST['id_address']));
+        if(!$addressModel->updateAddress($firstname, $lastname, $streetNumber, $streetName, $zipcode, $city, $idAddress)){
+            $errorMessage['request'] ="Une erreur s'est produite.";
+            $this->sendJSONResponse(['errorMessage' => $errorMessage]);
+        }
+        $this->sendJSONResponse(['success' => true]);
     }
 
     /**
@@ -119,23 +118,23 @@ class AddressesController extends Controller
     public function deleteAddress(){
         $this->isAccessAllowed();
         $sessionModel = new Session;
-        $idUser = $sessionModel->getSession($_COOKIE['session'])->id_user;
-        if(isset($_POST['id_address'])){
-            $idAddress = htmlspecialchars(strip_tags($_POST['id_address']));
-            $addressModel = new Addresses;
-            $result = $addressModel->deleteAddress($idAddress);
-            if($result){
-                header("location: /profile");
-            }else{
-                $errorMessage="Une erreur s'est produite lors de la suppression";
-                $userModel = new Users;
-                $user = $userModel->getuserById($idUser);
-                $addressesModel = new Addresses;
-                $addresses = $addressesModel->getAddresses($idUser);
-                $this->render("user/indexProfile", "Mon Profil", ['user' => $user, 'addresses' => $addresses, 'errorMessage' => $errorMessage]);
-            }
-        }else{
+        $idUser = $_SESSION['id_user'];
+        if(!isset($_POST['id_address'])){
             header("location: /profile");
+            exit();
         }
+        $idAddress = htmlspecialchars(strip_tags($_POST['id_address']));
+        $addressModel = new Addresses;
+        $result = $addressModel->deleteAddress($idAddress);
+        if($result){
+            header("location: /profile");
+            exit();
+        }
+        $errorMessage="Une erreur s'est produite lors de la suppression";
+        $userModel = new Users;
+        $user = $userModel->getuserById($idUser);
+        $addressesModel = new Addresses;
+        $addresses = $addressesModel->getAddresses($idUser);
+        $this->render("user/indexProfile", "Mon Profil", ['user' => $user, 'addresses' => $addresses, 'errorMessage' => $errorMessage]);
     }
 }

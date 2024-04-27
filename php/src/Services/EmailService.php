@@ -20,7 +20,7 @@ class EmailService {
      * @param string|null $name
      * @return boolean
      */
-    public static function sendEmail(string $from,  string $to, string $subject, string $body, bool $isHtml, string $name=null): bool
+    public static function sendEmail(string $from,  string $to, string $subject, string $body, bool $isHtml, string $name=null, string $attachement=null): bool
     {
         $mail = new PHPMailer(true);
 
@@ -37,6 +37,9 @@ class EmailService {
             $mail->Password = $_ENV['EMAIL_PASSWORD'];
             $mail->SMTPSecure = 'tls';
             $mail->SMTPKeepAlive = true;
+            if($attachement){
+                $mail->addStringAttachment($attachement, 'soLoveResin.pdf');
+            }
 
             //config message
             $mail->setFrom($from, $name);
@@ -84,9 +87,32 @@ class EmailService {
         }else{
             return false;
         }
-        $from = 'testsoloveresin@gmail.com';
+        $from = 'soloveresin@gmail.com';
         ob_start();
         $result = EmailService::sendEmail($from, $to, $subject, $body, true, 'So Love Resin');
+        ob_get_clean();
+        return $result;
+    }
+
+    /**
+     * send an email of confirmation to a success order with an invoice
+     *
+     * @param integer $idUser
+     * @param string $orderNumber
+     * @param string $invoice
+     * @return void
+     */
+    public static function confirmationOrderEmail(int $idUser, string $orderNumber, string $invoice){
+        $from = 'soloveresin@gmail.com';
+        $subject ="Confirmation de commande";
+        $body = "Bonjour ! \n\n Nous vous confirmons que votre commande n°" . $orderNumber . " a bien été validée. \n
+        Nous vous remercions de votre achat et votre confiance.\n
+        Nous traiterons votre commande des que possible.\n\n
+        So Love Resin.";
+        $userModel = new Users;
+        $to = $userModel->getUserById($idUser)->email;
+        ob_start();
+        $result = EmailService::sendEmail($from, $to, $subject, nl2br($body), true, 'So Love Resin', $invoice);
         ob_get_clean();
         return $result;
     }

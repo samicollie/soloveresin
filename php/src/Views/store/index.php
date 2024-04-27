@@ -53,6 +53,7 @@
                     <button type="submit" class="add-btn primary-btn add-cart-btn">AJOUTER</button>
                 </form>
             </div>
+            <div id="error-quantity-<?= $product->id_product ?>" class="error-message none"></div>
             
         </figcaption>
     </section>

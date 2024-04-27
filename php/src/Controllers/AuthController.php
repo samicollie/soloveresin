@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Users;
 use App\Models\Session;
 use App\Controllers\Traits\Validatortrait;
+use App\Models\Products;
 use App\Services\EmailService;
 use DateTime;
 
@@ -173,33 +174,94 @@ class AuthController extends Controller{
             $errorMessage['blank'] = "Tous les champs doivent être complétés";
             $this->sendJSONResponse(['errorMessage' => $errorMessage]);
         }
+        $this->IsUserExist($email);
+        $this->isUserVerified($email);
+        $this->verifyPassword($email, $password);
+        $this->updateUserSession($email);
+        $this->handleUserCart($email);
+        $this->sendJSONResponse(['success' => true]);
+    }
 
-        //verify if user exist
+    /**
+     * verify if and user exist with an email
+     *
+     * @param string $email
+     * @return void
+     */
+    private function IsUserExist(string $email){
         $userModel = new Users;
         $user = $userModel->getUserByEmail($email);
         if(!$user){
             $errorMessage['email'] = "Email ou mot de passe incorrect";
             $this->sendJSONResponse(['errorMessage' => $errorMessage]);
         }
+        
+    }
+
+    /**
+     * verify if the user account is verified
+     *
+     * @param string $email
+     * @return boolean
+     */
+    private function isUserVerified(string $email){
+        $userModel = new Users;
+        $user = $userModel->getUserByEmail($email);
         if(!$user->is_verified){
             $errorMessage['email'] = "Veuillez valider votre email avant de vous connecter";
             $this->sendJSONResponse(['errorMessage' => $errorMessage]);
         }
+    }
 
-        //verify the password
+    /**
+     * verify if the password sens in formular match with the database password
+     *
+     * @param string $email
+     * @param string $password
+     * @return void
+     */
+    private function verifyPassword(string $email, string $password){
+        $userModel = new Users;
+        $user = $userModel->getUserByEmail($email);
         if(!password_verify($password, $user->password)){
             $errorMessage['email'] = "Email ou mot de passe incorrect";
             $this->sendJSONResponse(['errorMessage' => $errorMessage]);
         }
+    }
 
-        //update the session for user and his cart
+    /**
+     * update the session in database in adding id_user to the session
+     *
+     * @param string $email
+     * @return void
+     */
+    private function updateUserSession(string $email){
+        $userModel = new Users;
+        $user = $userModel->getUserByEmail($email);
         $idUser = $user->id_user;
         $_SESSION['id_user'] = $idUser;
         $sessionModel = new Session;
         $cartModel = new Cart;
         $idCart = $cartModel->getIdCartFromIdUser($idUser);
         $sessionModel->AddIdUserSession($_SESSION['session_id'],$idUser);
+    }
+
+    /**
+     * update the car on database from the Session cart
+     *
+     * @param string $email
+     * @return void
+     */
+    private function handleUserCart(string $email){
+        $cartModel = new Cart;
+        $userModel = new Users;
+        $productModel = new Products;
+        $user = $userModel->getUserByEmail($email);
+        $idCart = $cartModel->getIdCartFromIdUser($user->id_user);
         if(isset($_SESSION['cart'])){
+            if(isset($_COOKIE['cart'])){
+                setcookie('cart','', time() - 3600, "/");
+            }
             $cart = $_SESSION['cart'];
             foreach($cart as $item){
                 $productId = $item['id'];
@@ -210,8 +272,10 @@ class AuthController extends Controller{
                     $cartModel->fromSessionToCart($idCart, $productId, $quantity);
                 }
             }
+            $cartModel->updateProductsInCartAboutMaxQuantity($idCart);
+        }else{
+            $cartModel->updateProductsInCartAboutMaxQuantity($idCart);
         }
-        $this->sendJSONResponse(['success' => true]);
     }
 
     /**
@@ -234,8 +298,6 @@ class AuthController extends Controller{
      * @return void
      */
     public function resetPassword(){
-        var_dump('ok');
-        die();
         if($this->isLoggedIn()){
             header("location: /profile");
             exit();
@@ -263,8 +325,6 @@ class AuthController extends Controller{
                 $errorMessage['email'] = "Une erreur s'est produite lors de l'envoi de l'email.";
                 $this->sendJSONResponse(['errorMessage' => $errorMessage]);
             }
-            var_dump($errorMessage);
-            die();
             $this->sendJSONResponse(['success' => true, 'message' => 'Le message a été envoyé, vérifiez vos mails.']);
             
         }

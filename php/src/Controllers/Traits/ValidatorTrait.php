@@ -2,6 +2,8 @@
 
 namespace APP\Controllers\Traits;
 
+use DateTime;
+
 trait Validatortrait {
 
     /**
@@ -227,6 +229,59 @@ trait Validatortrait {
     }
 
     /**
+     * validate the expiration date of a paiement card
+     *
+     * @param string $date
+     * @return boolean
+     */
+    public function validateExpirationDate(string $date): bool
+    {
+        $pattern = '/^(0[1-9]|1[0-2])\/([0-9]{2})$/';
+        if (!preg_match($pattern,$date)) {
+            return false;
+        }
+    
+        //extract the month and year
+        $parts = explode('/', $date);
+        $month = intval($parts[0], 10);
+        $year = intval($parts[1], 10);
+        $currentYear = intval(date('y')); // get only to last digit
+        
+        if ($year < $currentYear || $year > $currentYear + 5) {
+            return false;
+        }
+
+        if ($month < 1 || $month > 12) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * validate the paiement card number
+     *
+     * @param string $cardNumber
+     * @return boolean
+     */
+    public function validateCardNumber(string $cardNumber): bool
+    {
+        $pattern = '/\d{4}-\d{4}-\d{4}-\d{4}/';
+        return preg_match($pattern, $cardNumber);
+    }
+
+    /**
+     * validate the card visual value
+     *
+     * @param string $cvv
+     * @return boolean
+     */
+    public function validateCVV(string $cvv): bool
+    {
+        $pattern = '/\d{3}/';
+        return preg_match($pattern, $cvv);
+    }
+
+    /**
      * clean the data from formular fields
      *
      * @param array $fields
@@ -307,8 +362,17 @@ trait Validatortrait {
         if(isset($fileds['image']['tmp_name']) && !empty($fields['image']['tmp_name']) && !$this->isImageSizeValid($fileds['image']['tmp_name'])){
             $errorMessage['imageSize'] = "L'image est trop grande.";
         }
-        if(isset($fields['category']) &&!$this->validateStringWithOnlyLettersAndDigits($fields['category'])){
+        if(isset($fields['category']) && !$this->validateStringWithOnlyLettersAndDigits($fields['category'])){
             $errorMessage['categoryName'] = "Le nom de catégorie est invalide.";
+        }
+        if(isset($fields['expiration-date']) && !$this->validateExpirationDate($fields['expiration-date'])){
+            $errorMessage['expirationDate'] = "La date d'expiration est invalide.";
+        }
+        if(isset($fields['card-number']) && !$this->validateCardNumber($fields['card-number'])){
+            $errorMessage['cardNumber'] = "Le numéro de carte est invalide.";
+        }
+        if(isset($fields['cvv']) && !$this->validateCVV($fields['cvv'])){
+            $errorMessage['cvv'] = "Le cryptogramme visuel est invalide.";
         }
 
 
