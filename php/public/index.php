@@ -51,6 +51,20 @@ $router->post('/cart/add', 'Cart@addCartProduct');
 
 $router->post('/cart/delete', 'Cart@deleteCartProduct');
 
+$router->get('/cart/order/chooseaddresses', 'Orders@chooseAddresses');
+
+$router->post('/cart/order/chooseaddresses', 'Orders@chooseAddresses');
+
+$router->get('/cart/order/summary', 'Orders@orderSummary');
+
+$router->post('/cart/order/summary', 'Orders@orderSummary');
+
+$router->get('/cart/order/payment', 'Orders@orderPayment');
+
+$router->post('/cart/order/payment', 'Orders@orderPayment');
+
+$router->get('/cart/order/confirmation', 'Orders@confirmationOrder');
+
 $router->get('/register', 'Auth@indexRegister');
 
 $router->get('/login', 'Auth@indexLogin');
@@ -92,6 +106,8 @@ $router->get('/profile/address/modify/:id', 'Addresses@modifyAddress');
 $router->post('/profile/address/modify', 'Addresses@updateAddress');
 
 $router->post('/profile/address/delete', 'Addresses@deleteAddress');
+
+$router->get('/profile/address/add/:param', 'Addresses@indexAddAddress');
 
 $router->get('/profile/address/add', 'Addresses@indexAddAddress');
 

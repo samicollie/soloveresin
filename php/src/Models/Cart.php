@@ -164,6 +164,13 @@ class Cart extends Model
         }
     }
 
+    public function getQuantityCartProduct(int $idCart, int $idProduct): int
+    {
+        $sql = "SELECT quantity FROM Cart_Products 
+        WHERE id_cart = ? AND id_product = ?";
+        return $this->request($sql, [$idCart, $idProduct])->fetch()->quantity;
+    }
+
     /**
      * update quantity when the data go from cookie to cart in the database
      *
@@ -177,8 +184,23 @@ class Cart extends Model
         $sql="SELECT quantity 
         FROM Cart_Products 
         WHERE id_product = ? AND id_cart = ?";
-        $cartQuantity = $this->request($sql, [$idProduct, $idCart])->fetchAll();
-        $quantity += $cartQuantity[0]->quantity;
+        $cartQuantity = $this->request($sql, [$idProduct, $idCart])->fetchObject();
+        $quantity += $cartQuantity->quantity;
+        $sql="UPDATE Cart_Products SET quantity = ?
+        WHERE id_product = ? AND id_cart = ?";
+        $this->request($sql, [$quantity, $idProduct, $idCart]);
+    }
+
+    /**
+     * set the quantity of a product in an user cart
+     *
+     * @param integer $idCart
+     * @param integer $idProduct
+     * @param integer $quantity
+     * @return void
+     */
+    public function setQuantityProductInCart(int $idCart, int $idProduct, int $quantity): void
+    {
         $sql="UPDATE Cart_Products SET quantity = ?
         WHERE id_product = ? AND id_cart = ?";
         $this->request($sql, [$quantity, $idProduct, $idCart]);
@@ -196,6 +218,28 @@ class Cart extends Model
     {
         $sql="INSERT INTO Cart_Products (id_product, id_cart, quantity) VALUES (?, ?, ?)";
         $this->request($sql, [$idProduct, $idCart, $quantity]);
+    }
+
+    /**
+     * delete products in a user cart which are exhausted
+     *
+     * @param integer $idCart
+     * @return void
+     */
+    public function updateProductsInCartAboutMaxQuantity(int $idCart): void
+    {
+        $productModel = new Products;
+        $cart = $this->getProductsIdFromCart($idCart);
+        foreach($cart as $cartItem){
+            if($productModel->isProductExhausted($cartItem->id_product)){
+                $this->deleteProductInCart($idCart, $cartItem->id_product);
+            }else{
+                $maxQuantity = $productModel->getMaxQuantityProduct($cartItem->id_product);
+                if($cartItem->quantity > $maxQuantity){
+                    $this->setQuantityProductInCart($idCart, $cartItem->id_product, $maxQuantity);
+                }
+            }
+        }
     }
 
     /**
@@ -228,6 +272,18 @@ class Cart extends Model
         $sql="DELETE FROM Cart_Products WHERE id_product = ? AND id_cart = ?";
         $this->request($sql, [$productId, $idCart]);
 
+    }
+
+    /**
+     * delete all products in a user cart
+     *
+     * @param integer $idCart
+     * @return void
+     */
+    public function deleteAllProductsInCart(int $idCart):void
+    {
+        $sql = "DELETE FROM Cart_Products WHERE id_cart = ?";
+        $this->request($sql, [$idCart]);
     }
 
     /**

@@ -1,6 +1,9 @@
 <?php 
 namespace App\Models;
 
+use PDO;
+use App\Core\Db;
+
 class Orders extends Model
 {
     protected $id;
@@ -90,5 +93,41 @@ class Orders extends Model
         $this->idUser = $idUser;
 
         return $this;
+    }
+
+    /**
+     * create an order
+     *
+     * @param string $orderNumber
+     * @param string $date
+     * @param string $deliveryAddress
+     * @param string $invoiceAddress
+     * @param integer $idUser
+     * @return boolean|string
+     */
+    public function createOrder(string $orderNumber,string $date, string $deliveryAddress, string $invoiceAddress, float $price, int $idUser): bool|string
+    {
+        $sql =" INSERT INTO Orders (order_number, created_at, delivery_address, invoice_address, total_price, id_user)
+            VALUES (?, ?, ?, ?, ?, ?)";
+        if($this->request($sql, [$orderNumber, $date, $deliveryAddress, $invoiceAddress, $price, $idUser])){
+            return Db::getInstance()->lastInsertId();
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * add a product to an order
+     *
+     * @param integer $idProd
+     * @param integer $quantity
+     * @param integer $idOrder
+     * @return void
+     */
+    public function addProductInOrder(int $idProd, int $quantity, int $idOrder):void
+    {
+        $sql = "INSERT INTO Orders_Products (id_product, quantity, id_order)
+            VALUES (?, ?, ?)";
+            $this->request($sql, [$idProd, $quantity, $idOrder]);
     }
 }

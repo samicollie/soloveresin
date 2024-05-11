@@ -51,7 +51,31 @@
     <div class="underline-center">
         <hr>
     </div>
-    <div class="total-price">
-        Sous-Total : <?= number_format($price, 2, ',', '') ?> €
+    <div class="<?php
+        if(!empty($cart))
+        {
+            echo 'command-price-container';
+        }else{
+            echo 'no-command-price-container';
+        }
+        ?>">
+        <?php if(!empty($cart)): ?>
+        <div class="command-btn-block">
+            <a href="<?php 
+                if($isLoggedIn){ 
+                    echo '/cart/order/chooseaddresses';
+                }else{
+                    echo '/login';
+                }
+                ?>">
+            <button class="high-btn primary-btn">
+                COMMANDER
+            </button>
+            </a>
+        </div>
+        <?php endif ?>
+        <div class="total-price">
+            Sous-Total : <?= number_format($price, 2, ',', '') ?> €
+        </div>
     </div>
 </div>

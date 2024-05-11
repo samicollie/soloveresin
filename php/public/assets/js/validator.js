@@ -11,7 +11,10 @@ export class Validator {
     static city = "La ville est invalide.";
     static productName ="Le nom de l'article est invalide.";
     static price = "Le prix n'est pas valide.";
-    static categoryName = "Le nom de la catégorie est invalide";
+    static categoryName = "Le nom de la catégorie est invalide.";
+    static expirationDate = "La date d'expiration est invalide.";
+    static cardNumber = "Le numéro de la carte est invalide.";
+    static cvv = "Le Cryptogramme visuel est invalide.";
 
     //validate the firstname
     static validateFirstname(firstname)
@@ -108,6 +111,43 @@ export class Validator {
     {
         const regex = /^[a-zA-ZÀ-ÖØ-öø-ÿ0-9\s\-]+$/;
         return regex.test(categoryName);
+    }
+
+    //validate the date on the paiement card
+    static validExpirationDate(expirationDate) 
+    {
+        const regex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
+        if (!regex.test(expirationDate)) {
+            return false;
+        }
+    
+        //extract the month and year
+        const parts = expirationDate.split('/');
+        const month = parseInt(parts[0], 10);
+        const year = parseInt(parts[1], 10);
+        const currentYear = new Date().getFullYear() % 100; // get only to last digit
+    
+        if (year < currentYear || year > currentYear + 5) {
+            return false;
+        }
+
+        if (month < 1 || month > 12) {
+            return false;
+        }
+    }
+
+    //validate the paiement card number
+    static validateCardNumber(cardNumber)
+    {
+        const regex = /\d{4}-\d{4}-\d{4}-\d{4}/
+        return regex.test(cardNumber);
+    }
+
+    //validate the card verification value (cvv)
+    static validateCVV(cvv)
+    {
+        const regex = /\d{3}/;
+        return regex.test(cvv);
     }
 
     //Remove the error message

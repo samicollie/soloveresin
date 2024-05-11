@@ -54,17 +54,28 @@ class AdminProductsController extends Controller
         }
         $productId = $productModel->getLastId();
         if(is_uploaded_file($_FILES['image']['tmp_name'])){
-            move_uploaded_file($_FILES['image']['tmp_name'], ROOT . '/public/assets/images/' . $uploadedFile['imageName']);
-            $date = new DateTime();
-            $date = $date->format('Y-m-d');
-            $pictureModel = new Pictures;
-            if(!$pictureModel->addPicture($uploadedFile['imageName'], '/images/', $uploadedFile['sizeImage'], $date, $productId )){
-                $errorMessage['request'] = "Une erreur s'est produite avec l'ajout de l'image.";
-                $this->sendJSONResponse(['errorMessage' => $errorMessage]);
-            }
+            $this->addPicture($uploadedFile, $productId);
         }
         $successMessage = "L'ajout a été fait avec succés.";
         $this->sendJSONResponse(['success' => true, 'message' => $successMessage]);    
+    }
+
+    /**
+     * add a picture to a product
+     *
+     * @param array $uploadedFile
+     * @param integer $productId
+     * @return void
+     */
+    private function addPicture(array $uploadedFile, int $productId){
+        move_uploaded_file($_FILES['image']['tmp_name'], ROOT . '/public/assets/images/' . $uploadedFile['imageName']);
+        $date = new DateTime();
+        $date = $date->format('Y-m-d');
+        $pictureModel = new Pictures;
+        if(!$pictureModel->addPicture($uploadedFile['imageName'], '/images/', $uploadedFile['sizeImage'], $date, $productId )){
+            $errorMessage['request'] = "Une erreur s'est produite avec l'ajout de l'image.";
+            $this->sendJSONResponse(['errorMessage' => $errorMessage]);
+        }
     }
 
     /**
@@ -144,25 +155,34 @@ class AdminProductsController extends Controller
             $this->sendJSONResponse(['errorMessage' => $errorMessage]);
         }
         if(is_uploaded_file($_FILES['image']['tmp_name'])){
-            move_uploaded_file($_FILES['image']['tmp_name'], ROOT . '/public/assets/images/' . $uploadedFile['imageName']);
             $pictureModel = new Pictures;
             $isExistingPicture = $pictureModel->isPictureExist($productId);
-            $date = new DateTime();
-            $date = $date->format('Y-m-d');
             if($isExistingPicture){
-                if(!$pictureModel->updatePicture($uploadedFile['imageName'], $uploadedFile['sizeImage'], $date, $productId)){
-                    $errorMessage['request'] = "Une erreur s'est produite avec l'image.";
-                    $this->sendJSONResponse(['errorMessage' => $errorMessage]);
-                }
+                $this->updatePicture($uploadedFile, $productId);
             }else{
-                if(!$pictureModel->addPicture($uploadedFile['imageName'], '/images/', $uploadedFile['sizeImage'], $date, $productId)){
-                    $errorMessage['request'] = "Une erreur s'est produite avec l'image.";
-                    $this->sendJSONResponse(['errorMessage' => $errorMessage]);
-                }
+                $this->addPicture($uploadedFile, $productId);
             }
         }
         $successMessage = "La modification a été réalisée avec succés.";
         $this->sendJSONResponse(['success' => true, 'message' => $successMessage]);        
+    }
+
+    /**
+     * update a picture in database and in the images folder
+     *
+     * @param array $uploadedFile
+     * @param integer $productId
+     * @return void
+     */
+    private function updatePicture(array $uploadedFile, int $productId){
+        move_uploaded_file($_FILES['image']['tmp_name'], ROOT . '/public/assets/images/' . $uploadedFile['imageName']);
+            $date = new DateTime();
+            $date = $date->format('Y-m-d');
+            $pictureModel = new Pictures;
+            if(!$pictureModel->updatePicture($uploadedFile['imageName'], $uploadedFile['sizeImage'], $date, $productId)){
+                $errorMessage['request'] = "Une erreur s'est produite avec l'image.";
+                $this->sendJSONResponse(['errorMessage' => $errorMessage]);
+            }
     }
 
     /**

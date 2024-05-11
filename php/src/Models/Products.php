@@ -142,7 +142,8 @@ class Products extends Model
             COUNT(c.id_comment) AS rating_count
         FROM Comments c
         GROUP BY c.id_product
-    ) AS rating_stats ON p.id_product = rating_stats.id_product";
+    ) AS rating_stats ON p.id_product = rating_stats.id_product
+        WHERE p.exhausted = 0";
         return $this->request($sql)->fetchAll();
     }
 
@@ -176,6 +177,57 @@ class Products extends Model
             WHERE p.id_product = ?";
 
         return  $this->request($sql,[$id])->fetchObject();
+    }
+
+    /**
+     * get the max quantity of a product
+     *
+     * @param integer $idProduct
+     * @return integer
+     */
+    public function getMaxQuantityProduct(int $idProduct): int
+    {
+        $sql = "SELECT max_quantity as max FROM Products where id_product = ?";
+        return $this->request($sql, [$idProduct])->fetch()->max;
+    }
+
+
+    /**
+     * return if a product is exhausted
+     *
+     * @param integer $idProduct
+     * @return boolean
+     */
+    public function isProductExhausted(int $idProduct): bool
+    {
+        $sql = "SELECT exhausted FROM Products
+        WHERE id_product = ?";
+        $result = $this->request($sql, [$idProduct])->fetch()->exhausted;
+        if($result){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * update the quantity of a product in database
+     *
+     * @param integer $idProduct
+     * @param integer $quantity
+     * @return void
+     */
+    public function updateProductQuantity(int $idProduct, int $quantity): void
+    {
+        $maxQuantity = $this->getMaxQuantityProduct($idProduct);
+        $maxQuantity -= $quantity;
+        if($maxQuantity === 0){
+            $exhauted = 1;
+        }else{
+            $exhauted = 0;
+        }
+        $sql = "UPDATE Products SET max_quantity = ?, exhausted = ? WHERE id_product = ?";
+        $this->request($sql, [$maxQuantity, $exhauted, $idProduct]);
     }
 
     /**

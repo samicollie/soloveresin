@@ -43,7 +43,7 @@
         </div>
         <div class="submit-block">
             <button type="submit" class="primary-btn large-btn">SAUVEGARDER</button>
-            <a href="/profile">
+            <a href="<?php if($order){echo '/cart/order';}else{echo '/profile';} ?>">
                 <button class="primary-btn delete-btn" type="button">ANNULER</button>
             </a>
         </div>

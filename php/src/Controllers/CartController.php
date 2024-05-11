@@ -15,7 +15,8 @@ class CartController extends Controller
     public function index()
     {
         $cart = [];
-        if($this->isLoggedIn()){
+        $isLoggedIn = $this->isLoggedIn();
+        if($isLoggedIn){
             $cartModel = new Cart;
             $idUser = $_SESSION['id_user'];
             $idCart = $cartModel->getIdCartFromIdUser($idUser);
@@ -41,7 +42,7 @@ class CartController extends Controller
                 }
             }
         }
-        $this->render("cart/index", "Mon Panier", ["cart" => $cart]);
+        $this->render("cart/index", "Mon Panier", ["cart" => $cart, 'isLoggedIn' => $isLoggedIn]);
     }
 
     /**
@@ -61,6 +62,16 @@ class CartController extends Controller
             $idUser = $_SESSION['id_user'];
             $cartModel = new Cart;
             $idCart = $cartModel->getIdCartFromIdUser($idUser);
+            if($cartModel->isExistingProduct($idCart, $productId)){
+                $quantity = $cartModel->getQuantityCartProduct($idCart, $productId) + 1;
+                $productModel = new Products;
+                $maxQuantity = $productModel->getMaxQuantityProduct($productId);
+                if($quantity > $maxQuantity){
+                    $errorMessage[$productId] = "La quantité maximum pour ce produit est atteinte.";
+                    $this->sendJSONResponse(['errorMessage' => $errorMessage]);
+                }
+            }
+
             $cartModel->addProductInCart($productId, $idUser);
             $productCounter = $cartModel->getCartNumberProduct($idCart);
         }else{
@@ -82,6 +93,13 @@ class CartController extends Controller
                     }
                 }
                 if($productIndex !== -1){
+                    $productModel = new Products;
+                    $maxQuantity = $productModel->getMaxQuantityProduct($productId);
+                    $quantity = $cart[$productIndex]['quantity'] + 1 ;
+                    if($quantity > $maxQuantity){
+                        $errorMessage[$productId] = "La quantité maximum pour ce produit est atteinte.";
+                        $this->sendJSONResponse(['errorMessage' => $errorMessage]);
+                    }
                     $cart[$productIndex]['quantity'] += 1 ;
                 }else{
                     $cart[]= [
@@ -107,7 +125,7 @@ class CartController extends Controller
                 $productCounter = 1;
             }
         }
-        $this->renderPartial('cart/updateNumberProductsCart', ['productCounter' => $productCounter]);
+        $this->sendJSONResponse(['productCounter' => $productCounter]);
     }
 
     /**

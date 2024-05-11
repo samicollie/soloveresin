@@ -1,5 +1,5 @@
 import {Validator} from "./validator.js";
-import {nextSlide, displaySuccess, displayErrors,displayRating,sendAjaxRequest, togglePasswordField, handleSearch, handleFormSubmit, validateField} from './functions.js';
+import {nextSlide, displaySuccess, displayErrors,displayRating,sendAjaxRequest, togglePasswordField, handleSearch, handleFormSubmit, validateField, resetErrorMessages} from './functions.js';
 // At the loading of the page or when we get the data
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-
+    //start the carousel on the landing page
     if(document.querySelector('.carousel-container')){
         //start the carousel
         globalThis.currentIndex = 0;
@@ -90,18 +90,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 const productId = form.querySelector('.product-id').value;
                 const formData = new FormData();
                 formData.append("product_id", productId);
-                sendAjaxRequest("/cart/add","POST", formData, false,(response)=>{
-                    console.log(response);
-                    document.querySelector('#cart-link').innerHTML = response;
+                sendAjaxRequest("/cart/add","POST", formData, true,(response)=>{
+                    if(response.productCounter){
+                        document.querySelector('.product-counter').innerText = response.productCounter;
+                        resetErrorMessages();
+                    }
+                    if(response.errorMessage){
+                        displayErrors(response.errorMessage);
+                    }
                 });
             })
         });
     }
 
-    //manage the register-formular 
+    //handle the register-formular 
     const form = document.querySelector('#register-formular');
     if(form){
-        //manage the view of password to click on icon
+        //handle the view of password to click on icon
         const tooglePassword = document.querySelector('.eye-password');
         const toogleConfirmationPassword = document.querySelector('.eye-confirmation-password');
         const passwordField = document.querySelector('#password');
@@ -130,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    //manage the generate link formular
+    //handle the generate link formular
     const generateLinkFormular = document.querySelector('#generate-link-formular');
     if(generateLinkFormular){
         handleFormSubmit(generateLinkFormular, '/generate/link', ()=>{
@@ -138,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    //manage new password formular
+    //handle new password formular
     const newPasswordForm = document.querySelector('#new-password-formular');
     if(newPasswordForm){
         //manage the view of password to click on icon
@@ -164,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    //manage the login formular
+    //handle the login formular
     const loginForm = document.querySelector('#login-formular');
     if(loginForm){
         //manage the view of password to click on icon
@@ -179,7 +184,12 @@ document.addEventListener('DOMContentLoaded', () => {
         validateField(emailInput, Validator.validateEmail, "#error-email", Validator.email);
 
         handleFormSubmit(loginForm, '/login', ()=>{
-            window.location.href = '/profile';
+            const previousPage = document.referrer;
+            if(previousPage.includes('/cart')){
+                window.location.href = '/cart/order/chooseaddresses';
+            }else{
+                window.location.href = '/profile';
+            }
         });
     }
 
@@ -191,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    //manage modify contact formular
+    //handle modify contact formular
     const modifyContactForm = document.querySelector('#modify-contact-formular');
     if(modifyContactForm){
         //validate the fields of the formular to respect the constraints
@@ -207,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    //manage address formular
+    //handle address formular
     const addressForm = document.querySelector('#address-formular');
     if(addressForm){
         //validate the fields of the formular to respect the constraints
@@ -224,14 +234,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const cityInput = addressForm.querySelector('input[name="city"]');
         validateField(cityInput, Validator.validateCity, "#error-city", Validator.city);
 
-        
-        const url = currentUrl.endsWith('add') ? '/profile/address/add' : '/profile/address/modify';
-        handleFormSubmit(addressForm, url, ()=>{
-            window.location.href = '/profile';
+        function defineUrl(currentUrl){
+            if(currentUrl.endsWith('add') || currentUrl.endsWith('order')){
+                return '/profile/address/add';
+            }else{
+                return '/profile/address/modify';
+            }
+        }
+        handleFormSubmit(addressForm, defineUrl(currentUrl), (response)=>{
+            const previousPage = document.referrer;
+            if(previousPage.includes('/cart/order')){
+                window.location.href = '/cart/order/chooseaddresses';
+            }else{
+                window.location.href = '/profile';
+            }
         });
     }
 
-    //manage admin product formular
+    //handle admin product formular
     const adminProductForm = document.querySelector('#admin-product-formular');
     if(adminProductForm){
         //validate the fields of the formular to respect the constraints
@@ -253,7 +273,14 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem("successMessage");
     }
 
-    //manage admin category formular
+    //display the order number in the confirmation page
+    if(localStorage.getItem("orderNumber")){
+        const orderNumber = localStorage.getItem("orderNumber");
+        document.querySelector('#order-number').innerText = orderNumber;
+        localStorage.removeItem("orderNumber");
+    }
+
+    //handle admin category formular
     const adminCategoryForm = document.querySelector('#admin-category-formular');
     if(adminCategoryForm){
         //validate the field of the formular to respect the constraints
@@ -266,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    //manage the terms of sale formular
+    //handle the terms of sale formular
     const termsOfSaleForm = document.querySelector('#terms-of-sale-formular');
     if(termsOfSaleForm){
         handleFormSubmit(termsOfSaleForm, '/admin/legalNotices/termsofsale',()=>{
@@ -274,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    //manage privacy policy formular
+    //handle privacy policy formular
     const privacyPolicyForm = document.querySelector('#privacy-policy-formular');
     if(privacyPolicyForm){
         handleFormSubmit(privacyPolicyForm, '/admin/legalNotices/privacypolicy',()=>{
@@ -282,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    //manage usage cookie formular
+    //handle usage cookie formular
     const usageCookieForm = document.querySelector('#usage-cookie-formular');
     if(usageCookieForm){
         handleFormSubmit(usageCookieForm, '/admin/legalNotices/usagecookie',()=>{
@@ -290,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    //manage contact formular
+    //handle contact formular
     const contactForm = document.querySelector('#contact-formular');
     if(contactForm){
         handleFormSubmit(contactForm, '/contactUs',()=>{
@@ -298,11 +325,35 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    //manage modify landing page formular
+    //handle modify landing page formular
     const modifyLandingPageForm = document.querySelector('#admin-announces-formular');
     if(modifyLandingPageForm){
         handleFormSubmit(modifyLandingPageForm, '/admin/announces/modify',()=>{
             window.location.href = '/admin/dashboard';
+        });
+    }
+
+    //handle the addresses choice formular
+    const addressesChoiceForm = document.querySelector('#addresses-choice-formular');
+    if(addressesChoiceForm){
+        handleFormSubmit(addressesChoiceForm, '/cart/order/chooseaddresses',()=>{
+            window.location.href = '/cart/order/summary';
+        });
+    }
+
+    //handle the order summary formular
+    const orderSummaryForm = document.querySelector('#order-summary-formular');
+    if(orderSummaryForm){
+        handleFormSubmit(orderSummaryForm, '/cart/order/summary',()=>{
+            window.location.href = '/cart/order/payment';
+        });
+    }
+
+    //handle the payment formular
+    const orderPayementForm = document.querySelector('#order-payment-formular');
+    if(orderPayementForm){
+        handleFormSubmit(orderPayementForm, '/cart/order/payment',()=>{
+            window.location.href = '/cart/order/confirmation';
         });
     }
 });
